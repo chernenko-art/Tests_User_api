@@ -1,4 +1,9 @@
 {
+    "user": {
+        "schema": "http",
+        "host": "users.bugred.ru",
+        "port": "80"
+    },
     "log" : {
         "level" : "debug"
     }
