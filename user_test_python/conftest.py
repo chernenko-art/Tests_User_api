@@ -11,8 +11,7 @@ json_body = json.loads(json_file)
 
 
 def url_adress():
-    """Получение url из config.json
-    """
+    """Получение url из config.json"""
     schema = json_body['user']['schema']
     host = json_body['user']['host']
     port = json_body['user']['port']
@@ -20,7 +19,17 @@ def url_adress():
     
 
 def level_logging():
-    """Считывание level logging из config.json
-    """
+    """Считывание level logging из config.json"""
     numeric_level = getattr(logging, json_body["log"]["level"].upper(), None)
     return numeric_level
+
+
+def get_params_test():
+    """Получение параметров для теста"""
+    logging.info('Получение параметров для теста из config.json')
+    return {
+        'manager_email': json_body['test_params']['manager']['email'],
+        'manager_password': json_body['test_params']['manager']['password'],
+        'task_title': json_body['test_params']['task']['title'],
+        'task_description': json_body['test_params']['task']['description']
+        }

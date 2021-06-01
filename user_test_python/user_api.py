@@ -91,7 +91,24 @@ def do_login(email, password):
     logging.info(f'Отправлен запрос на авторизацию пользователя:\
          "email" : "{email}", "password" : "{password}"')
     if valid_response(response):
-        return response.json()
+        return response.json(), email
     else:
         logging.error('Ошибка в методе doLogin')
     
+
+def create_task(task_title, task_description, email_owner, email_assign):
+    """Метод CreateTask (создание задачи пользователю)"""
+    logging.info('Вызов метода CreateTask')
+    endpoint = '/tasks/rest/createtask'
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    response = post(url_adress() + endpoint, json={
+        "task_title": task_title,
+        "task_description": task_description,
+        "email_owner": email_owner,
+        "email_assign": email_assign
+    })
+    logging.info(f'Отправлен запрос на создание задачи пользователю: {email_assign}')
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе CreateTask')
