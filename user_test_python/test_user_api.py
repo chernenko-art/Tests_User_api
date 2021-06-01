@@ -1,8 +1,8 @@
-# from requests import get, put, post, delete
+import pytest
 import logging
 import time
-from conftest import level_logging,  url_adress
 from user_api import *
+from conftest import *
 
 
 # Конфигурация логов
@@ -14,13 +14,13 @@ logging.basicConfig(level=level_logging(),
                     )
 
 
-def test_doregister():
+def test_do_register():
     """
     Тест метода doRegister
 
     Тест реальзован при помощи проверки ответа об успешной регистрации 
     в бесконечном цикле, для предотвращения зацикливания, при возникновении
-    непредвиденной ошибки используется таймер на 10 сек.     
+    непредвиденной ошибки, используется таймер на 10 сек.     
 
     """
     logging.info('-'*15 + 'Запуск test_doregister')
@@ -29,18 +29,40 @@ def test_doregister():
         if time.time() - timing > 10.0:  # проверка времени выполнения цикла
             logging.error('Превышено время ожидания')
             break
-        response_body = doregister()
-        if 'type' in response_body:
-            logging.error('-'*15 + response_body[type])
+        response_json, email, name, password = do_register()
+        if 'type' in response_json:
+            logging.error(response_json['type'])
+            assert False
         else:
-            logging.info('-'*15 + f'Пользователь успешно зарегестрирован:\
-                "name" : "{response_body["name"]}",\
-                    "email" : "{response_body["email"]}",\
-                        "password" : "{response_body["password"]}")')
+            logging.info(f'Пользователь успешно зарегестрирован:\
+                "email" : {email}, "name": {name}, "password" : {password}')
             assert True
             break
 
 
+def test_do_login():
+    """
+    Тест метода  doLogin
+    Необходимость использования таймера указана в docstring test_doregister
+    """
+    logging.info('-'*15 + 'Запуск test_dologin')
+    timing = time.time()  # заводим таймер
+    while True:
+        if time.time() - timing > 10.0:  # проверка времени выполнения цикла
+            logging.error('Превышено время ожидания')
+            break
+        response_json, email, password = do_login()
+        if response_json['result'] == True:
+            logging.info(f'Авторизация пользователя выполнена успешно\
+                "email" : {email}, "password" : {password}')
+            assert True
+            break
+        else:
+            logging.debug(f'response_body = {response_json}')
+            logging.error('Ошибка авторизации пользователя')
+            assert False
+            
+                
 def test_createtask():
     """Тест метода CreaTetask"""
     pass

@@ -12,14 +12,15 @@ logging.basicConfig(level=level_logging(),
                     )
 
 
-def check_response(response):
+def valid_response(response):
     """Проверка header ответа сервера"""
-    logging.info('-'*15 + 'Проверка ответа от сервера')
+    logging.info('Проверка ответа от сервера')
 
     # Проверка status_code
     logging.info(f'Status code = {response.status_code}')
     if response.status_code != 200:
         logging.error(f'Status Code = {response.status_code}')
+        return False
     
     # Проверка наличия 'application/json' в 'content-type'
     content_type = response.headers['content-type']
@@ -31,7 +32,7 @@ def check_response(response):
     else:
         logging.debug(f'Response body = {response.json()}')
         logging.debug(f'Header "content-type" = [{response.headers["content-type"]}]')
-        logging.info('-'*15 + 'Проверка ответа от сервера успешно выполнена')
+        logging.info('Проверка ответа от сервера успешно выполнена')
         return True
 
 
@@ -40,11 +41,11 @@ def random_user_generator():
     Получение данных рандомного пользователя
     с помощью api https://randomuser.me/
     """
-    logging.info('-'*15 + 'Запуск получения данных рандомного пользователя')
+    logging.info('Запуск получения данных рандомного пользователя')
     url = 'https://randomuser.me/api'
     logging.info(f'Установка соединения с {url}')
     response = get(url)
-    if check_response(response) == True:
+    if valid_response(response):
         response_body = response.json()
         email = response_body['results'][0]['email']
         logging.debug(f'Получен "email" : "{email}"')
@@ -52,16 +53,16 @@ def random_user_generator():
         logging.debug(f'Получен "name" : "{name}"')
         password = response_body['results'][0]['login']['password']
         logging.debug(f'Получен  "password" : "{password}"')
-        logging.info('-'*15 + f'Получены данные рандомного пользователя:\
+        logging.info(f'Получены данные рандомного пользователя:\
              "email" : "{email}", "name" : "{name}", "password" : "{password}"')
         return email, name, password
     else:
-        logging.error('-'*15 + 'Ошибка в получении данных рандомного пользователя')
+        logging.error('Ошибка в получении данных рандомного пользователя')
 
 
-def doregister():
+def do_register():
     """Метод doRegister (запрос на регистрацию пользователя)"""
-    logging.info('-'*15 + 'Вызов метода doregister')
+    logging.info('Вызов метода doregister')
     endpoint = '/tasks/rest/doregister'
     email, name, password = random_user_generator()
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
@@ -70,14 +71,28 @@ def doregister():
         "name": name,
         "password": password
     })
-    logging.info('-'*15 + f'Отправлен запрос на регистрацию пользователя:\
+    logging.info(f'Отправлен запрос на регистрацию пользователя:\
          "name" : "{name}", "email" : "{email}", "password" : "{password}"')
-    if check_response(response) == True:
-        return response.json()
+    if valid_response(response):
+        return response.json(), email, name, password
     else:
-        logging.error('-'*15 + 'Ошибка в методе doregister')
+        logging.error('Ошибка в методе doregister')
 
 
-def dologin():
+def do_login():
     """Метод doLogin (запрос на авторизацию пользователя)"""
-    pass
+    logging.info('Вызов метода doLogin')
+    endpoint = '/tasks/rest/dologin'
+    response_json, email, name, password = do_register()
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    response = post(url_adress() + endpoint, json={
+        "email": email,
+        "password": password
+    })
+    logging.info(f'Отправлен запрос на авторизацию пользователя:\
+         "email" : "{email}", "password" : "{password}"')
+    if valid_response(response):
+        return response.json(), email, password
+    else:
+        logging.error('Ошибка в методе doLogin')
+    
