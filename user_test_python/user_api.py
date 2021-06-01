@@ -74,7 +74,12 @@ def do_register():
     logging.info(f'Отправлен запрос на регистрацию пользователя:\
          "name" : "{name}", "email" : "{email}", "password" : "{password}"')
     if valid_response(response):
-        return response.json(), email, name, password
+        return {
+            "json" : response.json(),
+            "email": email,
+            "name": name,
+            "password": password
+            }
     else:
         logging.error('Ошибка в методе doregister')
 
@@ -91,7 +96,7 @@ def do_login(email, password):
     logging.info(f'Отправлен запрос на авторизацию пользователя:\
          "email" : "{email}", "password" : "{password}"')
     if valid_response(response):
-        return response.json(), email
+        return response.json()
     else:
         logging.error('Ошибка в методе doLogin')
     

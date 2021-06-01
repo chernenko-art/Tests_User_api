@@ -29,13 +29,17 @@ def test_do_register():
         if time.time() - timing > 10.0:  # проверка времени выполнения цикла
             logging.error('Превышено время ожидания')
             break
-        response_json, email, name, password = do_register()
-        if 'type' in response_json:
-            logging.error(response_json['type'])
+        _do_register = do_register()
+        if 'type' in _do_register['json']:
+            logging.error(_do_register['json']['type'])
             assert False
         else:
-            logging.info(f'Пользователь успешно зарегестрирован:\
-                "email" : {email}, "name": {name}, "password" : {password}')
+            logging.info(
+                f'Пользователь успешно зарегестрирован:\
+                "email" : {_do_register["email"]},\
+                    "name": {_do_register["name"]},\
+                         "password" : {_do_register["password"]}'
+                         )
             assert True
             break
 
@@ -51,14 +55,15 @@ def test_do_login():
         if time.time() - timing > 10.0:  # проверка времени выполнения цикла
             logging.error('Превышено время ожидания')
             break
-        response_json_reg, email, name, password = do_register()
-        response_json_log = do_login(email, password)
-        if response_json_log['result']:
+        _do_register = do_register()
+        response_json = do_login(_do_register["email"], _do_register["password"])
+        if response_json['result']:
             logging.info(f'Авторизация пользователя выполнена успешно\
-                "email" : {email}, "password" : {password}')
+                "email" : {_do_register["email"]}, "password" : {_do_register["password"]}')
             assert True
+            break
         else:
-            logging.debug(f'response_json_login = {response_json_log}')
+            logging.debug(f'response_json_login = {response_json}')
             logging.error('Ошибка авторизации пользователя')
             assert False
             
@@ -72,12 +77,12 @@ def test_createtask():
             logging.error('Превышено время ожидания')
             break
         params_test = get_params_test()
-        json_body, email_assign, name, password = do_register()
+        _do_register = do_register()
         response_json = create_task(
             params_test['task_title'],
             params_test['task_description'],
             params_test['manager_email'],
-            email_assign
+            _do_register['email']
             )
         if response_json['message'] == 'Задача успешно создана!':
             logging.info(f'Задача успешно создана: {response_json}')
@@ -87,4 +92,3 @@ def test_createtask():
             logging.debug(f'response_json_login = {response_json}')
             logging.error('Ошибка создания задачи')
             assert False
-
