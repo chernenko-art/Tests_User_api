@@ -51,14 +51,15 @@ def test_do_login():
         if time.time() - timing > 10.0:  # проверка времени выполнения цикла
             logging.error('Превышено время ожидания')
             break
-        response_json, email, password = do_login()
-        if response_json['result'] == True:
+        response_json_reg, email, name, password = do_register()
+        response_json_log = do_login(email, password)
+        if response_json_log['result'] == True:
             logging.info(f'Авторизация пользователя выполнена успешно\
                 "email" : {email}, "password" : {password}')
             assert True
             break
         else:
-            logging.debug(f'response_body = {response_json}')
+            logging.debug(f'response_json_login = {response_json_log}')
             logging.error('Ошибка авторизации пользователя')
             assert False
             

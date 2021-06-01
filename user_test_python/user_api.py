@@ -79,11 +79,10 @@ def do_register():
         logging.error('Ошибка в методе doregister')
 
 
-def do_login():
+def do_login(email, password):
     """Метод doLogin (запрос на авторизацию пользователя)"""
     logging.info('Вызов метода doLogin')
     endpoint = '/tasks/rest/dologin'
-    response_json, email, name, password = do_register()
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
     response = post(url_adress() + endpoint, json={
         "email": email,
@@ -92,7 +91,7 @@ def do_login():
     logging.info(f'Отправлен запрос на авторизацию пользователя:\
          "email" : "{email}", "password" : "{password}"')
     if valid_response(response):
-        return response.json(), email, password
+        return response.json()
     else:
         logging.error('Ошибка в методе doLogin')
     
