@@ -227,53 +227,6 @@ def create_user(email, name, tasks, companies,
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_task(task_title, task_description, email_owner, email_assign):
-    """Метод CreateTask (создание задачи пользователю)"""
-
-    logging.info('Вызов метода CreateTask')
-    endpoint = '/tasks/rest/createtask'
-
-    # Отправка запроса на создание задачи
-    logging.info(f'Установка соединения с {url_adress() + endpoint}')
-    response = post(url_adress() + endpoint, json={
-        "task_title": task_title,
-        "task_description": task_description,
-        "email_owner": email_owner,
-        "email_assign": email_assign
-    })
-    logging.info(
-        f'Отправлен запрос на создание задачи пользователю: {email_assign}')
-
-    # Проверка валидности ответа на запрос
-    if valid_response(response):
-        return response.json()
-    else:
-        logging.error('Ошибка в методе CreateTask')
-
-
-def create_company(company_name, company_type, company_users, email_owner):
-    """Метод CreateCompany (создание компании с привязкой пользователей)"""
-
-    logging.info('Вызов метода CreateCompany')
-    endpoint = '/tasks/rest/createcompany'
-
-    # Отправка запроса на создание компании
-    logging.info(f'Установка соединения с {url_adress() + endpoint}')
-    response = post(url_adress() + endpoint, json={
-        "company_name": company_name,
-        "company_type": company_type,
-        "company_users": company_users,
-        "email_owner": email_owner
-    })
-    logging.info(f'Отправлен запрос на создание компании: {company_name}')
-
-    # Проверка валидности ответа на запрос
-    if valid_response(response):
-        return response.json()
-    else:
-        logging.error('Ошибка в методе CreateCompany')
-
-
 def create_user_with_task(email, name, tasks, companies,
                 hobby=None, adres=None, name1=None,
                 surname1=None, fathername1=None,
