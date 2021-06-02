@@ -60,28 +60,48 @@ def random_user_generator():
         logging.error('Ошибка в получении данных рандомного пользователя')
 
 
-def do_register():
-    """Метод doRegister (запрос на регистрацию пользователя)"""
-    logging.info('Вызов метода doregister')
+def do_register(number=1):
+    """Метод doRegister (запрос на регистрацию пользователя)
+
+    Args:
+        number: количество пользователей
+
+    """
     endpoint = '/tasks/rest/doregister'
-    email, name, password = random_user_generator()
-    logging.info(f'Установка соединения с {url_adress() + endpoint}')
-    response = post(url_adress() + endpoint, json={
-        "email": email,
-        "name": name,
-        "password": password
-    })
-    logging.info(f'Отправлен запрос на регистрацию пользователя:\
-         "name" : "{name}", "email" : "{email}", "password" : "{password}"')
-    if valid_response(response):
-        return {
-            "json" : response.json(),
+
+    # Словарь для хранения данных, зарегестрированных пользователей
+    user_params_dict = {}
+    # Переменная для генерации ключей user_params_dict
+    key_user = 0
+
+    # Цикл регистрации пользователей
+    for _ in range(number):
+        logging.info('Вызов метода doRegister')
+        # Запрос данных рандомного пользователя
+        email, name, password = random_user_generator()
+        logging.info(f'Установка соединения с {url_adress() + endpoint}')
+        # Отправка запроса на регистрацию пользователя
+        response = post(url_adress() + endpoint, json={
             "email": email,
             "name": name,
             "password": password
-            }
-    else:
-        logging.error('Ошибка в методе doregister')
+        })
+        logging.info(f'Отправлен запрос на регистрацию пользователя:\
+            "name" : "{name}", "email" : "{email}", "password" : "{password}"')
+        # Проверка валидности ответа на запрос регистрации
+        if valid_response(response):
+            user_params_dict[str(key_user)] = {
+                "json" : response.json(),
+                "email": email,
+                "name": name,
+                "password": password
+                }
+            # Генерация ключа следующего пользователя
+            key_user += 1
+        else:
+            logging.error('Ошибка в методе doregister')
+    # Возврат словаря с данными зарегестрированных пользователей
+    return user_params_dict
 
 
 def do_login(email, password):
@@ -117,3 +137,21 @@ def create_task(task_title, task_description, email_owner, email_assign):
         return response.json()
     else:
         logging.error('Ошибка в методе CreateTask')
+
+
+def create_company(company_name, company_type, company_users, email_owner):
+    """Метод CreateCompany (создание компании с привязкой пользователей)"""
+    logging.info('Вызов метода CreateCompany')
+    endpoint = '/tasks/rest/createcompany'
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    response = post(url_adress() + endpoint, json={
+        "company_name": company_name,
+        "company_type": company_type,
+        "company_users": company_users,
+        "email_owner": email_owner
+    })
+    logging.info(f'Отправлен запрос на создание компании: {company_name}')
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе CreateCompany')
