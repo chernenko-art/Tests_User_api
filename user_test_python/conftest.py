@@ -36,3 +36,11 @@ def get_params_test():
         'company_name': json_body['test_params']['company']['name'],
         'company_type': json_body['test_params']['company']['type']
         }
+
+
+def avatar_file():
+    """Получение пути к файлу avatar из config.json"""
+    avatar_path = json_body['test_params']['avatar']
+    avatar = open(avatar_path, 'rb')
+    return avatar
+

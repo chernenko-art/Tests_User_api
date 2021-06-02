@@ -19,6 +19,7 @@
         "company": {
             "name": "Yandex Team",
             "type": "ООО"
-        }
+        },
+        "avatar": "./image/avatar_image.jpg"
     }
 }

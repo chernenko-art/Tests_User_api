@@ -270,3 +270,44 @@ def create_user_with_task(email, name, tasks, companies,
         return response.json()
     else:
         logging.error('Ошибка в методе CreateCompany')
+
+
+def add_avatar(email, avatar):
+    """Метод addAvatar (добавление аватара пользователю)"""
+
+    logging.info('Вызов метода addAvatar')
+    endpoint = '/tasks/rest/addavatar'
+
+    # Отправка запроса на добавление аватара пользователю
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    response = post(url_adress() + endpoint, 
+                    data={"email": email}, files={'avatar': avatar})
+
+    logging.info(f'Отправлен запрос на добавление аватара пользователю: "email" : "{email}"')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе addAvatar')
+
+
+def delele_avatar(email):
+    """Метод DeleteAvatar (удаление аватара пользователю)"""
+
+    logging.info('Вызов метода addAvatar')
+    endpoint = '/tasks/rest/deleteavatar'
+
+    # Отправка запроса на добавление аватара пользователю
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    response = post(url_adress() + endpoint,
+                    data={"email": email})
+
+    logging.info(
+        f'Отправлен запрос на удаление аватара пользователю: "email" : "{email}"')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе DeleteAvatar')

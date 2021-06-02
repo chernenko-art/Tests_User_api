@@ -243,3 +243,71 @@ def test_create_user_with_task():
             logging.info(f'Пользователь успешно создан: {response_json}')
             assert True
             break
+
+
+def test_add_avatar():
+    """Тест метода  addAvatar"""
+    logging.info('-'*15 + 'Запуск test_add_avatar')
+
+    # Заводим таймер для защиты от ошибок на сервере
+    timing = time.time()
+
+    # Цикл с таймером на 10 сек
+    while True:
+
+        # Проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Регистрация нового пользователя
+        user = do_register()
+
+        # Получение параметра avatar
+        avatar = avatar_file()
+        
+        # Запрос на добавление аватара пользователю
+        response_json = add_avatar(user["0"]["email"], avatar)
+
+        # Проверка успешности добавления аватара пользователю
+        if response_json['status'] == 'ok':
+            logging.info(f'Аватар добавлен пользователю: {user["0"]["email"]}')
+            assert True
+            return user["0"]["email"]
+            break
+        else:
+            logging.error(f'Ошибка test_add_avatar : {response_json}')
+            assert False
+
+
+def test_delele_avatar(email_user=test_add_avatar()):
+    """Тест метода  DeleteAvatar
+    
+    Args:
+        email_user: по умолчанию получает email из
+                    функции test_add_avatar()
+    """
+    logging.info('-'*15 + 'Запуск test_delele_avatar')
+
+    # Заводим таймер для защиты от ошибок на сервере
+    timing = time.time()
+
+    # Цикл с таймером на 10 сек
+    while True:
+
+        # Проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+        
+        # Запрос на удаление аватара пользователя
+        response_json = delele_avatar(email_user)
+
+        # Проверка успешности добавления аватара пользователю
+        if response_json['status'] == 'ok':
+            logging.info(f'Аватар  пользователя {email_user} удален успешно.')
+            assert True
+            break
+        else:
+            logging.error(f'Ошибка test_add_avatar : {response_json}')
+            assert False
