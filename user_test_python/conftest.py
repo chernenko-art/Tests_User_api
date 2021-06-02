@@ -30,6 +30,7 @@ def get_params_test():
     return {
         'manager_email': json_body['test_params']['manager']['email'],
         'manager_password': json_body['test_params']['manager']['password'],
+        'task_json': json_body['test_params']['task'],
         'task_title': json_body['test_params']['task']['title'],
         'task_description': json_body['test_params']['task']['description'],
         'company_name': json_body['test_params']['company']['name'],
