@@ -84,8 +84,7 @@ def test_do_login():
             assert True
             break
         else:
-            logging.debug(f'response_json = {response_json}')
-            logging.error('Ошибка авторизации пользователя')
+            logging.error(f'Ошибка авторизации пользователя : {response_json}')
             assert False
             
                 
@@ -122,10 +121,10 @@ def test_createtask():
         if response_json['message'] == 'Задача успешно создана!':
             logging.info(f'Задача успешно создана: {response_json}')
             assert True
-            break
+            # Возврат id задачи в массиве
+            return [response_json['id_task']]
         else:
-            logging.debug(f'response_json = {response_json}')
-            logging.error('Ошибка создания задачи')
+            logging.error(f'Ошибка создания задачи : {response_json}')
             assert False
 
 
@@ -154,20 +153,59 @@ def test_create_company(users_num=1):
         # Создание списка email пользователей
         email_user_list = [user[str(num)]['email'] for num in range(users_num)]
         
-        # Сапрос на создание компании
+        # Запрос на создание компании
         response_json = create_company(
             params_test['company_name'],
             params_test['company_type'],
             email_user_list,
             params_test['manager_email']
-        )
+            )
 
         # Проверка успешности создания компании
         if response_json['type'] == 'success':
             logging.info(f'Компания успешно создана: {response_json}')
             assert True
-            break
+            # Возврат id компании в массиве
+            return [response_json['id_company']]
         else:
-            logging.debug(f'response_json = {response_json}')
-            logging.error('Ошибка создания компании')
+            logging.error(f'Ошибка создания компании: {response_json}')
             assert False
+
+
+def test_create_user(users_num=1):
+    """Тест метода CreateUser
+    
+    Args:
+        users_num: количество пользователей в компании
+        
+    """
+    logging.info('-'*15 + 'Запуск test_create_user')
+
+    # Таймер
+    timing = time.time()
+    while True:
+        # проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Генерация данных нового пользователя
+        email, name, password = random_user_generator()
+
+        # Получение id задания рандомному пользователю в виде массива
+        task = test_createtask()
+
+        # Получение id рандомной компании в виде массива
+        company = test_create_company()
+
+        # Запрос на создание пользователя
+        response_json = create_user(email, name, task, company)
+
+        # Проверка успешности создания пользователя
+        if 'type' in response_json:
+            logging.error(f'Ошибка создания пользователя: {response_json}')
+            assert False
+        else:
+            logging.info(f'Пользователь успешно создан: {response_json}')
+            assert True
+            break

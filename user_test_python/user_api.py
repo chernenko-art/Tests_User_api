@@ -45,7 +45,8 @@ def random_user_generator():
     
     logging.info('Запуск получения данных рандомного пользователя')
     url = 'https://randomuser.me/api'
-
+    
+    # Отправка запроса получение данных рандомного пользователя
     logging.info(f'Установка соединения с {url}')
     response = get(url)
 
@@ -82,10 +83,12 @@ def do_register(number=1):
     # Цикл регистрации пользователей
     for _ in range(number):
         logging.info('Вызов метода doRegister')
+        
         # Запрос данных рандомного пользователя
         email, name, password = random_user_generator()
-        logging.info(f'Установка соединения с {url_adress() + endpoint}')
+        
         # Отправка запроса на регистрацию пользователя
+        logging.info(f'Установка соединения с {url_adress() + endpoint}')
         response = post(url_adress() + endpoint, json={
             "email": email,
             "name": name,
@@ -93,6 +96,7 @@ def do_register(number=1):
         })
         logging.info(f'Отправлен запрос на регистрацию пользователя:\
             "name" : "{name}", "email" : "{email}", "password" : "{password}"')
+        
         # Проверка валидности ответа на запрос
         if valid_response(response):
             user_params_dict[str(key_user)] = {
@@ -105,16 +109,18 @@ def do_register(number=1):
             key_user += 1
         else:
             logging.error('Ошибка в методе doregister')
+    
     # Возврат словаря с данными зарегестрированных пользователей
     return user_params_dict
 
 
 def do_login(email, password):
     """Метод doLogin (запрос на авторизацию пользователя)"""
-    
+
     logging.info('Вызов метода doLogin')
     endpoint = '/tasks/rest/dologin'
     
+    # Отправка запроса на авторизацию пользователя
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
     response = post(url_adress() + endpoint, json={
         "email": email,
@@ -136,6 +142,7 @@ def create_task(task_title, task_description, email_owner, email_assign):
     logging.info('Вызов метода CreateTask')
     endpoint = '/tasks/rest/createtask'
     
+    # Отправка запроса на создание задачи
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
     response = post(url_adress() + endpoint, json={
         "task_title": task_title,
@@ -144,7 +151,7 @@ def create_task(task_title, task_description, email_owner, email_assign):
         "email_assign": email_assign
     })
     logging.info(f'Отправлен запрос на создание задачи пользователю: {email_assign}')
-
+    
     # Проверка валидности ответа на запрос
     if valid_response(response):
         return response.json()
@@ -158,6 +165,7 @@ def create_company(company_name, company_type, company_users, email_owner):
     logging.info('Вызов метода CreateCompany')
     endpoint = '/tasks/rest/createcompany'
     
+    # Отправка запроса на создание компании
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
     response = post(url_adress() + endpoint, json={
         "company_name": company_name,
@@ -166,7 +174,52 @@ def create_company(company_name, company_type, company_users, email_owner):
         "email_owner": email_owner
     })
     logging.info(f'Отправлен запрос на создание компании: {company_name}')
+    
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе CreateCompany')
 
+
+def create_user(email, name, tasks, companies,
+    hobby=None, adres=None, name1=None,
+    surname1=None, fathername1=None,
+    cat=None, dog=None, parrot=None,
+    cavy=None, hamster=None, squirrel=None,
+    phone=None, inn=None, gender=None,
+    birthday=None, date_start=None):
+    """Метод CreateUser (создание пользователей c привязкой к задаче)"""
+
+    logging.info('Вызов метода CreateUser')
+    endpoint = '/tasks/rest/createuser'
+    
+    # Отправка запроса на создание пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    response = post(url_adress() + endpoint, json={
+        "email": email,
+        "name": name,
+        "tasks": tasks,
+        "companies": companies,
+        "hobby": hobby,
+        "adres": adres,
+        "name1": name1,
+        "surname1": surname1,
+        "fathername1": fathername1,
+        "cat": cat,
+        "dog": dog,
+        "parrot": parrot,
+        "cavy": cavy,
+        "hamster": hamster,
+        "squirrel": squirrel,
+        "phone": phone,
+        "inn": inn,
+        "gender": gender,
+        "birthday": birthday,
+        "date_start": date_start
+    })
+    logging.info(f'Отправлен запрос на создание пользователя: {email}')
+    
     # Проверка валидности ответа на запрос
     if valid_response(response):
         return response.json()
