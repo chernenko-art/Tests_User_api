@@ -26,10 +26,12 @@ def level_logging():
 
 def get_params_test():
     """Получение параметров для теста"""
-    logging.info('Получение параметров для теста из config.json')
+    logging.info(f'Получение параметров для теста из config.json: {json_body["test_params"]}')
     return {
         'manager_email': json_body['test_params']['manager']['email'],
         'manager_password': json_body['test_params']['manager']['password'],
         'task_title': json_body['test_params']['task']['title'],
-        'task_description': json_body['test_params']['task']['description']
+        'task_description': json_body['test_params']['task']['description'],
+        'company_name': json_body['test_params']['company']['name'],
+        'company_type': json_body['test_params']['company']['type']
         }

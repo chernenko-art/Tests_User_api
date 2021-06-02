@@ -15,6 +15,10 @@
         "task": {
             "title": "Спринт 84",
             "description": "Провести smoke test"
+        },
+        "company": {
+            "name": "Yandex Team",
+            "type": "ООО"
         }
     }
 }

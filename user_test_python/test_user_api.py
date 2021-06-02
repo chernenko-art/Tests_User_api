@@ -38,16 +38,16 @@ def test_do_register(number=1):
         # Цикл проверки успешности регистрации
         for _ in range(number):
             # Регистрация пользователя
-            _do_register = do_register()
-            if 'type' in _do_register["0"]['json']:
-                logging.error(_do_register["0"]['json']['type'])
+            user = do_register()
+            if 'type' in user["0"]['json']:
+                logging.error(user["0"]['json']['type'])
                 assert False
             else:
                 logging.info(
                     f'Пользователь успешно зарегестрирован:\
-                    "email" : {_do_register["0"]["email"]},\
-                        "name": {_do_register["0"]["name"]},\
-                            "password" : {_do_register["0"]["password"]}'
+                    "email" : {user["0"]["email"]},\
+                        "name": {user["0"]["name"]},\
+                            "password" : {user["0"]["password"]}'
                             )
                 assert True
         break
@@ -72,19 +72,19 @@ def test_do_login():
             assert False
 
         # Регистрация нового пользователя
-        _do_register = do_register()
+        user = do_register()
 
         # Авторизация зарегестрированного пользователя
-        response_json = do_login(_do_register["0"]["email"],_do_register["0"]["password"])
+        response_json = do_login(user["0"]["email"], user["0"]["password"])
         
         # Проверка успешности авторизации
         if response_json['result']:
             logging.info(f'Авторизация пользователя выполнена успешно\
-                "email" : {_do_register["0"]["email"]}, "password" : {_do_register["0"]["password"]}')
+                "email" : {user["0"]["email"]}, "password" : {user["0"]["password"]}')
             assert True
             break
         else:
-            logging.debug(f'response_json_login = {response_json}')
+            logging.debug(f'response_json = {response_json}')
             logging.error('Ошибка авторизации пользователя')
             assert False
             
@@ -108,14 +108,14 @@ def test_createtask():
         params_test = get_params_test()
        
         # Регистрация нового пользователя
-        _do_register = do_register()
+        user = do_register()
 
         # Создание задачи для нового пользователя
         response_json = create_task(
             params_test['task_title'],
             params_test['task_description'],
             params_test['manager_email'],
-            _do_register["0"]['email']
+            user["0"]['email']
             )
 
         # Проверка успешности создания задачи
@@ -124,6 +124,50 @@ def test_createtask():
             assert True
             break
         else:
-            logging.debug(f'response_json_login = {response_json}')
+            logging.debug(f'response_json = {response_json}')
             logging.error('Ошибка создания задачи')
+            assert False
+
+
+def test_create_company(users_num=1):
+    """Тест метода CreateCompany
+
+    Args:
+        users_num: количество пользователей в компании
+    """
+    logging.info('-'*15 + 'Запуск test_create_company')
+    
+    # Таймер
+    timing = time.time()
+    while True:
+        # проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Извлечение параметров company_name, company_type, email_owner
+        params_test = get_params_test()
+        
+        # Регистрация новых пользователей
+        user = do_register(users_num)
+       
+        # Создание списка email пользователей
+        email_user_list = [user[str(num)]['email'] for num in range(users_num)]
+        
+        # Сапрос на создание компании
+        response_json = create_company(
+            params_test['company_name'],
+            params_test['company_type'],
+            email_user_list,
+            params_test['manager_email']
+        )
+
+        # Проверка успешности создания компании
+        if response_json['type'] == 'success':
+            logging.info(f'Компания успешно создана: {response_json}')
+            assert True
+            break
+        else:
+            logging.debug(f'response_json = {response_json}')
+            logging.error('Ошибка создания компании')
             assert False
