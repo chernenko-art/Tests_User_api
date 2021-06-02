@@ -14,6 +14,7 @@ logging.basicConfig(level=level_logging(),
 
 def valid_response(response):
     """Проверка header ответа сервера"""
+    
     logging.info('Проверка ответа от сервера')
 
     # Проверка status_code
@@ -41,10 +42,14 @@ def random_user_generator():
     Получение данных рандомного пользователя
     с помощью api https://randomuser.me/
     """
+    
     logging.info('Запуск получения данных рандомного пользователя')
     url = 'https://randomuser.me/api'
+
     logging.info(f'Установка соединения с {url}')
     response = get(url)
+
+    # Проверка валидности ответа на запрос
     if valid_response(response):
         response_body = response.json()
         email = response_body['results'][0]['email']
@@ -88,7 +93,7 @@ def do_register(number=1):
         })
         logging.info(f'Отправлен запрос на регистрацию пользователя:\
             "name" : "{name}", "email" : "{email}", "password" : "{password}"')
-        # Проверка валидности ответа на запрос регистрации
+        # Проверка валидности ответа на запрос
         if valid_response(response):
             user_params_dict[str(key_user)] = {
                 "json" : response.json(),
@@ -106,8 +111,10 @@ def do_register(number=1):
 
 def do_login(email, password):
     """Метод doLogin (запрос на авторизацию пользователя)"""
+    
     logging.info('Вызов метода doLogin')
     endpoint = '/tasks/rest/dologin'
+    
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
     response = post(url_adress() + endpoint, json={
         "email": email,
@@ -115,6 +122,8 @@ def do_login(email, password):
     })
     logging.info(f'Отправлен запрос на авторизацию пользователя:\
          "email" : "{email}", "password" : "{password}"')
+    
+    # Проверка валидности ответа на запрос
     if valid_response(response):
         return response.json()
     else:
@@ -123,8 +132,10 @@ def do_login(email, password):
 
 def create_task(task_title, task_description, email_owner, email_assign):
     """Метод CreateTask (создание задачи пользователю)"""
+    
     logging.info('Вызов метода CreateTask')
     endpoint = '/tasks/rest/createtask'
+    
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
     response = post(url_adress() + endpoint, json={
         "task_title": task_title,
@@ -133,6 +144,8 @@ def create_task(task_title, task_description, email_owner, email_assign):
         "email_assign": email_assign
     })
     logging.info(f'Отправлен запрос на создание задачи пользователю: {email_assign}')
+
+    # Проверка валидности ответа на запрос
     if valid_response(response):
         return response.json()
     else:
@@ -141,8 +154,10 @@ def create_task(task_title, task_description, email_owner, email_assign):
 
 def create_company(company_name, company_type, company_users, email_owner):
     """Метод CreateCompany (создание компании с привязкой пользователей)"""
+    
     logging.info('Вызов метода CreateCompany')
     endpoint = '/tasks/rest/createcompany'
+    
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
     response = post(url_adress() + endpoint, json={
         "company_name": company_name,
@@ -151,6 +166,8 @@ def create_company(company_name, company_type, company_users, email_owner):
         "email_owner": email_owner
     })
     logging.info(f'Отправлен запрос на создание компании: {company_name}')
+
+    # Проверка валидности ответа на запрос
     if valid_response(response):
         return response.json()
     else:

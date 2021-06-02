@@ -34,7 +34,6 @@ def test_do_register(number=1):
         if time.time() - timing > 10.0: 
             logging.error('Превышено время ожидания')
             assert False
-            break
        
         # Цикл проверки успешности регистрации
         for _ in range(number):
@@ -60,17 +59,28 @@ def test_do_login():
     Необходимость использования таймера указана в docstring test_doregister
     """
     logging.info('-'*15 + 'Запуск test_dologin')
-    timing = time.time()  # заводим таймер
+    
+    # Заводим таймер для защиты от ошибок на сервере
+    timing = time.time()
+    
+    # Цикл с таймером на 10 сек
     while True:
-        if time.time() - timing > 10.0:  # проверка времени выполнения цикла
+
+        # Проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
             logging.error('Превышено время ожидания')
             assert False
-            break
+
+        # Регистрация нового пользователя
         _do_register = do_register()
-        response_json = do_login(_do_register["email"], _do_register["password"])
+
+        # Авторизация зарегестрированного пользователя
+        response_json = do_login(_do_register["0"]["email"],_do_register["0"]["password"])
+        
+        # Проверка успешности авторизации
         if response_json['result']:
             logging.info(f'Авторизация пользователя выполнена успешно\
-                "email" : {_do_register["email"]}, "password" : {_do_register["password"]}')
+                "email" : {_do_register["0"]["email"]}, "password" : {_do_register["0"]["password"]}')
             assert True
             break
         else:
@@ -82,20 +92,33 @@ def test_do_login():
 def test_createtask():
     """Тест метода CreaTetask"""
     logging.info('-'*15 + 'Запуск test_createtask')
-    timing = time.time()  # заводим таймер
+    
+    # Заводим таймер для защиты от ошибок на сервере
+    timing = time.time()
+
+    # Цикл с таймером на 10 сек
     while True:
-        if time.time() - timing > 10.0:  # проверка времени выполнения цикла
+
+        # Проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
             logging.error('Превышено время ожидания')
             assert False
-            break
+        
+        # Извлечение параметров task_title, task_description, email_owner
         params_test = get_params_test()
+       
+        # Регистрация нового пользователя
         _do_register = do_register()
+
+        # Создание задачи для нового пользователя
         response_json = create_task(
             params_test['task_title'],
             params_test['task_description'],
             params_test['manager_email'],
-            _do_register['email']
+            _do_register["0"]['email']
             )
+
+        # Проверка успешности создания задачи
         if response_json['message'] == 'Задача успешно создана!':
             logging.info(f'Задача успешно создана: {response_json}')
             assert True
