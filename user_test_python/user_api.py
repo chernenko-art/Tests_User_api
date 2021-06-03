@@ -182,7 +182,7 @@ def create_company(company_name, company_type, company_users, email_owner):
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_user(email, name, tasks, companies, params):
+def create_user(email, name, tasks, companies, params=None):
     """Метод CreateUser (создание пользователей c атрибутами)"""
     
     logging.info('Вызов метода CreateUser')
@@ -191,7 +191,7 @@ def create_user(email, name, tasks, companies, params):
     # Формирование входных параметров запроса
     user_params = {"email": email, "name": name,
                    "tasks": tasks, "companies": companies}
-    if len(params) > 0:
+    if params:
         user_params.update(params)
              
     # Отправка запроса на создание пользователя
@@ -206,7 +206,7 @@ def create_user(email, name, tasks, companies, params):
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_user_with_task(email, name, tasks, companies, params):
+def create_user_with_task(email, name, tasks, companies, params=None):
     """Метод CreateUser (создание пользователей c атрибутами)"""
 
     logging.info('Вызов метода CreateUser')
@@ -215,7 +215,7 @@ def create_user_with_task(email, name, tasks, companies, params):
     # Формирование входных параметров запроса
     user_params = {"email": email, "name": name,
                    "tasks": tasks, "companies": companies}
-    if len(params) > 0:
+    if params:
         user_params.update(params)
 
     # Отправка запроса на создание пользователя

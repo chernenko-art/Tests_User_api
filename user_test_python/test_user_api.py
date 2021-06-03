@@ -282,7 +282,7 @@ def test_add_avatar():
             assert False
 
 
-def test_delele_avatar(email_user=test_add_avatar()):
+def test_delele_avatar():
     """Тест метода  DeleteAvatar
     
     Args:
@@ -301,6 +301,9 @@ def test_delele_avatar(email_user=test_add_avatar()):
         if time.time() - timing > 10.0:
             logging.error('Превышено время ожидания')
             assert False
+        
+        # Создание аватара пользователя, получение email
+        email_user = test_add_avatar()
         
         # Запрос на удаление аватара пользователя
         response_json = delele_avatar(email_user)
