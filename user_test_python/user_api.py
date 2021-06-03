@@ -182,43 +182,22 @@ def create_company(company_name, company_type, company_users, email_owner):
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_user(email, name, tasks, companies,
-    hobby=None, adres=None, name1=None,
-    surname1=None, fathername1=None,
-    cat=None, dog=None, parrot=None,
-    cavy=None, hamster=None, squirrel=None,
-    phone=None, inn=None, gender=None,
-    birthday=None, date_start=None):
+def create_user(email, name, tasks, companies, params):
     """Метод CreateUser (создание пользователей c атрибутами)"""
     
     logging.info('Вызов метода CreateUser')
     endpoint = '/tasks/rest/createuser'
-    
+
+    # Формирование входных параметров запроса
+    user_params = {"email": email, "name": name,
+                   "tasks": tasks, "companies": companies}
+    if len(params) > 0:
+        user_params.update(params)
+             
     # Отправка запроса на создание пользователя
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
-    response = post(url_adress() + endpoint, json={
-        "email": email,
-        "name": name,
-        "tasks": tasks,
-        "companies": companies,
-        "hobby": hobby,
-        "adres": adres,
-        "name1": name1,
-        "surname1": surname1,
-        "fathername1": fathername1,
-        "cat": cat,
-        "dog": dog,
-        "parrot": parrot,
-        "cavy": cavy,
-        "hamster": hamster,
-        "squirrel": squirrel,
-        "phone": phone,
-        "inn": inn,
-        "gender": gender,
-        "birthday": birthday,
-        "date_start": date_start
-    })
-    logging.info(f'Отправлен запрос на создание пользователя: {email}')
+    response = post(url_adress() + endpoint, json=user_params)
+    logging.info(f'Отправлен запрос на создание пользователя: {user_params}')
     
     # Проверка валидности ответа на запрос
     if valid_response(response):
@@ -227,43 +206,22 @@ def create_user(email, name, tasks, companies,
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_user_with_task(email, name, tasks, companies,
-                hobby=None, adres=None, name1=None,
-                surname1=None, fathername1=None,
-                cat=None, dog=None, parrot=None,
-                cavy=None, hamster=None, squirrel=None,
-                phone=None, inn=None, gender=None,
-                birthday=None, date_start=None):
+def create_user_with_task(email, name, tasks, companies, params):
     """Метод CreateUser (создание пользователей c атрибутами)"""
 
     logging.info('Вызов метода CreateUser')
     endpoint = '/tasks/rest/createuserwithtasks'
 
+    # Формирование входных параметров запроса
+    user_params = {"email": email, "name": name,
+                   "tasks": tasks, "companies": companies}
+    if len(params) > 0:
+        user_params.update(params)
+
     # Отправка запроса на создание пользователя
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
-    response = post(url_adress() + endpoint, json={
-        "email": email,
-        "name": name,
-        "tasks": tasks,
-        "companies": companies,
-        "hobby": hobby,
-        "adres": adres,
-        "name1": name1,
-        "surname1": surname1,
-        "fathername1": fathername1,
-        "cat": cat,
-        "dog": dog,
-        "parrot": parrot,
-        "cavy": cavy,
-        "hamster": hamster,
-        "squirrel": squirrel,
-        "phone": phone,
-        "inn": inn,
-        "gender": gender,
-        "birthday": birthday,
-        "date_start": date_start
-    })
-    logging.info(f'Отправлен запрос на создание пользователя: {email}')
+    response = post(url_adress() + endpoint, json=user_params)
+    logging.info(f'Отправлен запрос на создание пользователя: {user_params}')
 
     # Проверка валидности ответа на запрос
     if valid_response(response):

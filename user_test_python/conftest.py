@@ -38,6 +38,13 @@ def get_params_test():
         }
 
 
+def optional_user_params():
+    """Получение опциональных параметров пользователя"""
+    logging.info(f'Получение опциональных параметров пользователя \
+        из config.json: {json_body["test_params"]["user"]}')
+    return json_body['test_params']['user']
+
+
 def avatar_file():
     """Получение пути к файлу avatar из config.json"""
     avatar_path = json_body['test_params']['avatar']

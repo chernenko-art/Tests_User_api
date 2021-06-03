@@ -195,8 +195,9 @@ def test_create_user():
         # Получение id рандомной компании в виде массива
         company = test_create_company()
 
-        # Запрос на создание пользователя
-        response_json = create_user(email, name, task, company)
+        # Получение параметров пользователя и запрос на создание
+        optional_params = optional_user_params()
+        response_json = create_user(email, name, task, company, optional_params)
 
         # Проверка успешности создания пользователя
         if 'type' in response_json:
@@ -232,8 +233,9 @@ def test_create_user_with_task():
         # Получение id рандомной компании в виде массива
         company = test_create_company()
 
-        # Запрос на создание пользователя
-        response_json = create_user_with_task(email, name, task, company)
+        # Получение параметров пользователя и запрос на создание
+        optional_params = optional_user_params()       
+        response_json = create_user_with_task(email, name, task, company, optional_params)
 
         # Проверка успешности создания пользователя
         if 'type' in response_json:
