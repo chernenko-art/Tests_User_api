@@ -62,12 +62,19 @@ def optional_user_params():
     return json_body['test_params']['user']
 
 
-def avatar_file():
+def avatar_file(num_avatar=1):
     """Получение пути к файлу avatar из config.json
+
+    Args:
+        num_avatar (int, optional): номер картинки для аватара
 
     Returns:
         BufferedReader: open file
     """
-    avatar_path = json_body['test_params']['avatar']
-    avatar = open(avatar_path, 'rb')
+    if num_avatar == 1:
+        avatar_path = json_body['test_params']['avatar']['avatar_1']
+        avatar = open(avatar_path, 'rb')
+    else:
+        avatar_path = json_body['test_params']['avatar']['avatar_2']
+        avatar = open(avatar_path, 'rb')
     return avatar

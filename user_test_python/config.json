@@ -38,6 +38,9 @@
             "birthday": "01.01.1900",
             "date_start": "11.11.2000"
         },
-        "avatar": "./image/avatar_image.jpg"
+        "avatar": {
+            "avatar_1" : "./image/avatar_image.jpg",
+            "avatar_2": "./image/avatar_image2.jpg"
+        }
     }
 }
