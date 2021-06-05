@@ -37,10 +37,12 @@ def valid_response(response):
         return True
 
 
-def random_user_generator():
-    """
-    Получение данных рандомного пользователя
+def random_user_generator()->tuple:
+    """Получение данных рандомного пользователя
     с помощью api https://randomuser.me/
+
+    Returns:
+        tuple: данные пользователя (email, name, password)
     """
     
     logging.info('Запуск получения данных рандомного пользователя')
@@ -66,13 +68,16 @@ def random_user_generator():
         logging.error('Ошибка в получении данных рандомного пользователя')
 
 
-def do_register(number=1):
+def do_register(number=1)->dict:
     """Метод doRegister (запрос на регистрацию пользователя)
 
     Args:
-        number: количество пользователей
+        number (int, optional): количество пользователей. Defaults to 1.
 
+    Returns:
+        dict: данные пользователя (json, email, name, password)
     """
+ 
     endpoint = '/tasks/rest/doregister'
 
     # Словарь для хранения данных, зарегестрированных пользователей
@@ -114,8 +119,16 @@ def do_register(number=1):
     return user_params_dict
 
 
-def do_login(email, password):
-    """Метод doLogin (запрос на авторизацию пользователя)"""
+def do_login(email, password) -> dict:
+    """Метод doLogin (запрос на авторизацию пользователя)
+
+    Args:
+        email (str): email пользователя
+        password (str): password пользователя
+
+    Returns:
+        dict: response json
+    """
 
     logging.info('Вызов метода doLogin')
     endpoint = '/tasks/rest/dologin'
@@ -136,8 +149,18 @@ def do_login(email, password):
         logging.error('Ошибка в методе doLogin')
     
 
-def create_task(task_title, task_description, email_owner, email_assign):
-    """Метод CreateTask (создание задачи пользователю)"""
+def create_task(task_title, task_description, email_owner, email_assign) -> dict:
+    """Метод CreateTask (создание задачи пользователю)
+
+    Args:
+        task_title (str): заголовок задачи
+        task_description (str): описание задачи
+        email_owner (str): email автора
+        email_assign (str): email исполнителя
+
+    Returns:
+        dict: response json
+    """
     
     logging.info('Вызов метода CreateTask')
     endpoint = '/tasks/rest/createtask'
@@ -159,8 +182,18 @@ def create_task(task_title, task_description, email_owner, email_assign):
         logging.error('Ошибка в методе CreateTask')
 
 
-def create_company(company_name, company_type, company_users, email_owner):
-    """Метод CreateCompany (создание компании с привязкой пользователей)"""
+def create_company(company_name, company_type, company_users, email_owner) -> dict:
+    """Метод CreateCompany (создание компании с привязкой пользователей)
+
+    Args:
+        company_name (str): название компании
+        company_type (str): тип компании (ООО, ИП, ОАО)
+        company_users (list): email сотрудников
+        email_owner (str): email автора
+
+    Returns:
+        dict: response json
+    """
     
     logging.info('Вызов метода CreateCompany')
     endpoint = '/tasks/rest/createcompany'
@@ -182,8 +215,19 @@ def create_company(company_name, company_type, company_users, email_owner):
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_user(email, name, tasks, companies, params=None):
-    """Метод CreateUser (создание пользователей c атрибутами)"""
+def create_user(email, name, tasks, companies, params=None) -> dict:
+    """Метод CreateUser (создание пользователей c привязкой к задаче)
+
+    Args:
+        email (str): email пользователя
+        name (str): имя пользователя
+        tasks (list): список id уже существующих задач
+        companies (list): перечень id компаний
+        params (dict, optional): остальные параметры пользователя. Defaults to None.
+
+    Returns:
+        dict: response json
+    """
     
     logging.info('Вызов метода CreateUser')
     endpoint = '/tasks/rest/createuser'
@@ -206,8 +250,19 @@ def create_user(email, name, tasks, companies, params=None):
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_user_with_task(email, name, tasks, companies, params=None):
-    """Метод CreateUser (создание пользователей c атрибутами)"""
+def create_user_with_task(email, name, tasks, companies, params=None) -> dict:
+    """Метод CreateUser (создание пользователя и создание задачи для него)
+
+    Args:
+        email (str): email пользователя
+        name (str): имя пользователя
+        tasks (list): список новых задач пользователя [{title:foo, description:foo}]
+        companies (list): перечень id компаний
+        params (dict, optional): остальные параметры пользователя. Defaults to None.
+
+    Returns:
+        dict: response json
+    """
 
     logging.info('Вызов метода CreateUser')
     endpoint = '/tasks/rest/createuserwithtasks'
@@ -230,8 +285,16 @@ def create_user_with_task(email, name, tasks, companies, params=None):
         logging.error('Ошибка в методе CreateCompany')
 
 
-def add_avatar(email, avatar):
-    """Метод addAvatar (добавление аватара пользователю)"""
+def add_avatar(email, avatar) -> dict:
+    """Метод addAvatar (добавление аватара пользователю)
+
+    Args:
+        email (str): email пользователя
+        avatar (str): путь к картинке (jpg, png)
+
+    Returns:
+        dict: response json
+    """
 
     logging.info('Вызов метода addAvatar')
     endpoint = '/tasks/rest/addavatar'
@@ -250,8 +313,15 @@ def add_avatar(email, avatar):
         logging.error('Ошибка в методе addAvatar')
 
 
-def delele_avatar(email):
-    """Метод DeleteAvatar (удаление аватара пользователю)"""
+def delele_avatar(email) -> dict:
+    """Метод DeleteAvatar (удаление аватара пользователю)
+
+    Args:
+        email (str): email пользователя
+
+    Returns:
+        dict: response json
+    """
 
     logging.info('Вызов метода addAvatar')
     endpoint = '/tasks/rest/deleteavatar'
@@ -276,16 +346,16 @@ def magic_search(query, company_type=None, fullSimilarity=None,
     """Метод MagicSearch (поиск по сотрудникам или компаниям)
 
     Args:
-        query (str): Критерии поиска:
+        query (str): основные критерии поиска:
             * по пользователю (name, email, birthday, name1, surname1, fathername1, phone, adres, inn);
             * по компании (name, inn, ogrn, kpp, adress, phone).
-        company_type (str, optional): Где искать (USER, COMPANY).
-        fullSimilarity (bool, optional): Искать по полному совпадению (True, False).
-        taskStatus (str, optional): Поиск по статусу задачи (ALL, ACTUAL, COMPLETE, FAIL).
-        include (list, optional): Дополнительная информация о контрагенте (ALL, USER, TASK, COMPANY, WHY).
-        maxCount (int, optional): Количество результатов, возвращаемых в ответе (max value = 30).
+        company_type (str, optional): где искать (USER, COMPANY).
+        fullSimilarity (bool, optional): искать по полному совпадению (True, False).
+        taskStatus (str, optional): поиск по статусу задачи (ALL, ACTUAL, COMPLETE, FAIL).
+        include (list, optional): дополнительная информация о контрагенте (ALL, USER, TASK, COMPANY, WHY).
+        maxCount (int, optional): количество результатов, возвращаемых в ответе (max value = 30).
     Returns:
-        dict: json response body
+        dict: response json
     """
 
     logging.info('Вызов метода MagicSearch')
@@ -315,4 +385,3 @@ def magic_search(query, company_type=None, fullSimilarity=None,
     else:
         logging.debug(f'Response body = {response.json()}')
         return response.json()
- 

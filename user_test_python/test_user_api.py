@@ -15,12 +15,10 @@ logging.basicConfig(level=level_logging(),
 
 
 def test_do_register(number=1):
-    """
-    Тест метода doRegister
-    
-    Args:
-        number: количество пользователей    
+    """Тест метода doRegister
 
+    Args:
+        number (int, optional): количество пользователей. Defaults to 1.
     """
     logging.info('-'*15 + 'Запуск test_doregister')
     
@@ -54,10 +52,7 @@ def test_do_register(number=1):
 
 
 def test_do_login():
-    """
-    Тест метода  doLogin
-    Необходимость использования таймера указана в docstring test_doregister
-    """
+    """Тест метода  doLogin"""
     logging.info('-'*15 + 'Запуск test_dologin')
     
     # Заводим таймер для защиты от ошибок на сервере
@@ -89,7 +84,11 @@ def test_do_login():
             
                 
 def test_createtask():
-    """Тест метода CreaTetask"""
+    """Тест метода CreaTetask
+
+    Returns:
+        list: id задачи
+    """
     logging.info('-'*15 + 'Запуск test_createtask')
     
     # Заводим таймер для защиты от ошибок на сервере
@@ -132,7 +131,10 @@ def test_create_company(users_num=1):
     """Тест метода CreateCompany
 
     Args:
-        users_num: количество пользователей в компании
+        users_num (int, optional): количество пользователей в компании. Defaults to 1.
+
+    Returns:
+        list: id компании
     """
     logging.info('-'*15 + 'Запуск test_create_company')
     
@@ -174,7 +176,9 @@ def test_create_company(users_num=1):
 
 def test_create_user():
     """Тест метода CreateUser
-    Cоздание пользователя c привязкой к задаче.
+
+    Returns:
+        tuple: email, name, task, company, optional_params
     """
     logging.info('-'*15 + 'Запуск test_create_user')
 
@@ -211,7 +215,9 @@ def test_create_user():
 
 def test_create_user_with_task():
     """Тест метода CreateUser
-    Cоздание пользователя и задачи для него.
+
+    Returns:
+        tuple: email, name, task, company, optional_params
     """
     logging.info('-'*15 + 'Запуск test_create_user_with_task')
 
@@ -248,7 +254,11 @@ def test_create_user_with_task():
 
 
 def test_add_avatar():
-    """Тест метода  addAvatar"""
+    """Тест метода  addAvatar
+
+    Returns:
+        str: email пользователя
+    """
     logging.info('-'*15 + 'Запуск test_add_avatar')
 
     # Заводим таймер для защиты от ошибок на сервере
@@ -276,7 +286,6 @@ def test_add_avatar():
             logging.info(f'Аватар добавлен пользователю: {user["0"]["email"]}')
             assert True
             return user["0"]["email"]
-            break
         else:
             logging.error(f'Ошибка test_add_avatar : {response_json}')
             assert False
@@ -329,7 +338,7 @@ def test_magic_search():
             assert False
 
         # Определение параметров поиска
-        email, name, task, company, optional_params = test_create_user_with_task()
+        email, name, task, company, optional_params = test_create_user()
 
         # Поиск по заданным параметрам
         search_params = ' '.join([email, name, str(company[0])])
@@ -342,5 +351,4 @@ def test_magic_search():
         else:
             logging.info(f'Поиск выполнен успешно. Результаты поиска: {response_json}')
             assert True
-            break
-            
+            break         

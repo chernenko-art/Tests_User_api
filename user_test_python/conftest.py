@@ -1,6 +1,5 @@
 import pytest
 from requests import get
-# from _pytest.fixtures import fixture
 import json
 import logging
 
@@ -11,7 +10,11 @@ json_body = json.loads(json_file)
 
 
 def url_adress():
-    """Получение url из config.json"""
+    """Получение url из config.json
+
+    Returns:
+        str: url adress
+    """
     schema = json_body['user']['schema']
     host = json_body['user']['host']
     port = json_body['user']['port']
@@ -19,13 +22,22 @@ def url_adress():
     
 
 def level_logging():
-    """Считывание level logging из config.json"""
+    """Считывание level logging из config.json
+
+    Returns:
+        getattr: атрибут level функции logging
+    """
     numeric_level = getattr(logging, json_body["log"]["level"].upper(), None)
     return numeric_level
 
 
 def get_params_test():
-    """Получение параметров для теста"""
+    """Получение параметров для теста
+
+    Returns:
+        tuple: manager_email, manager_password, task_json, task_title, task_description,\
+            company_name, company_type
+    """
     logging.info(f'Получение параметров для теста из config.json: {json_body["test_params"]}')
     return {
         'manager_email': json_body['test_params']['manager']['email'],
@@ -39,15 +51,23 @@ def get_params_test():
 
 
 def optional_user_params():
-    """Получение опциональных параметров пользователя"""
+    """Получение опциональных параметров пользователя
+
+    Returns:
+        dict: hobby, adres, name1, surname1, fathername1, cat, dog, parrot,\
+            cavy, hamster, squirrel, phone, inn, gender, birthday, date_start
+    """
     logging.info(f'Получение опциональных параметров пользователя \
         из config.json: {json_body["test_params"]["user"]}')
     return json_body['test_params']['user']
 
 
 def avatar_file():
-    """Получение пути к файлу avatar из config.json"""
+    """Получение пути к файлу avatar из config.json
+
+    Returns:
+        BufferedReader: open file
+    """
     avatar_path = json_body['test_params']['avatar']
     avatar = open(avatar_path, 'rb')
     return avatar
-
