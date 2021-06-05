@@ -269,3 +269,50 @@ def delele_avatar(email):
         return response.json()
     else:
         logging.error('Ошибка в методе DeleteAvatar')
+
+
+def magic_search(query, company_type=None, fullSimilarity=None,
+                 taskStatus=None, include=None, maxCount=None) -> dict:
+    """Метод MagicSearch (поиск по сотрудникам или компаниям)
+
+    Args:
+        query (str): Критерии поиска:
+            * по пользователю (name, email, birthday, name1, surname1, fathername1, phone, adres, inn);
+            * по компании (name, inn, ogrn, kpp, adress, phone).
+        company_type (str, optional): Где искать (USER, COMPANY).
+        fullSimilarity (bool, optional): Искать по полному совпадению (True, False).
+        taskStatus (str, optional): Поиск по статусу задачи (ALL, ACTUAL, COMPLETE, FAIL).
+        include (list, optional): Дополнительная информация о контрагенте (ALL, USER, TASK, COMPANY, WHY).
+        maxCount (int, optional): Количество результатов, возвращаемых в ответе (max value = 30).
+    Returns:
+        dict: json response body
+    """
+
+    logging.info('Вызов метода MagicSearch')
+    endpoint = '/tasks/rest/magicsearch'
+
+    # Отправка запроса на выполнение поиска
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    request_params = {
+        "query": query,
+        "company_type": company_type,
+        "fullSimilarity": fullSimilarity,
+        "taskStatus": taskStatus,
+        "include": include,
+        "maxCount": maxCount
+    }
+    response = post(url_adress() + endpoint, json=request_params)
+
+    logging.info(f'Отправлен запрос на выполение поиска: {request_params}')
+
+    # Проверка валидности ответа на запрос
+    logging.info(f'Status code = {response.status_code}')
+    logging.debug(f'Response headers: {response.headers}')
+    content_type = response.headers['content-type']
+    header_list = [elem.strip() for elem in content_type.split(';')]
+    if 'application/json' not in header_list:
+        logging.error(f'"application/json" отсутствует в "content-type"')
+    else:
+        logging.debug(f'Response body = {response.json()}')
+        return response.json()
+ 

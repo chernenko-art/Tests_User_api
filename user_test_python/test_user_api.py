@@ -206,7 +206,7 @@ def test_create_user():
         else:
             logging.info(f'Пользователь успешно создан: {response_json}')
             assert True
-            break
+            return email, name, task, company, optional_params
 
 
 def test_create_user_with_task():
@@ -244,7 +244,7 @@ def test_create_user_with_task():
         else:
             logging.info(f'Пользователь успешно создан: {response_json}')
             assert True
-            break
+            return email, name, task, company, optional_params
 
 
 def test_add_avatar():
@@ -283,12 +283,7 @@ def test_add_avatar():
 
 
 def test_delele_avatar():
-    """Тест метода  DeleteAvatar
-    
-    Args:
-        email_user: по умолчанию получает email из
-                    функции test_add_avatar()
-    """
+    """Тест метода  DeleteAvatar"""
     logging.info('-'*15 + 'Запуск test_delele_avatar')
 
     # Заводим таймер для защиты от ошибок на сервере
@@ -316,3 +311,36 @@ def test_delele_avatar():
         else:
             logging.error(f'Ошибка test_add_avatar : {response_json}')
             assert False
+
+
+def test_magic_search():
+    """Тест метода  MagicSearch"""
+    logging.info('-'*15 + 'Запуск test_magic_search')
+
+    # Заводим таймер для защиты от ошибок на сервере
+    timing = time.time()
+
+    # Цикл с таймером на 10 сек
+    while True:
+
+        # Проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Определение параметров поиска
+        email, name, task, company, optional_params = test_create_user_with_task()
+
+        # Поиск по заданным параметрам
+        search_params = ' '.join([email, name, str(company[0])])
+        response_json = magic_search(search_params)
+        
+        # Проверка успешности выполнения поиска
+        if 'code_error' in response_json:
+            logging.error(f'Ошибка test_magic_search : {response_json}')
+            assert False
+        else:
+            logging.info(f'Поиск выполнен успешно. Результаты поиска: {response_json}')
+            assert True
+            break
+            
