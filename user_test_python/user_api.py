@@ -250,14 +250,14 @@ def create_user(email, name, tasks, companies, params=None) -> dict:
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_user_with_task(email, name, tasks, companies, params=None) -> dict:
+def create_user_with_task(email, name, tasks, companies=None, params=None) -> dict:
     """Метод CreateUser (создание пользователя и создание задачи для него)
 
     Args:
         email (str): email пользователя
         name (str): имя пользователя
         tasks (list): список новых задач пользователя [{title:foo, description:foo}]
-        companies (list): перечень id компаний
+        companies (list, optional): перечень id компаний
         params (dict, optional): остальные параметры пользователя. Defaults to None.
 
     Returns:
@@ -385,3 +385,33 @@ def magic_search(query, company_type=None, fullSimilarity=None,
     else:
         logging.debug(f'Response body = {response.json()}')
         return response.json()
+
+
+def user_one_field(email, field='hobby', value='fitness') -> dict:
+    """Метод UserOneField (изменение 1 поля пользователя)
+
+    Args:
+        email (str): email пользователя
+        field (str): поле для изменения. Defaults to 'hobby'.
+        value (str): значение поля field. Defaults to 'fitness'.
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода UserOneField')
+    endpoint = '/tasks/rest/useronefield'
+
+    # Отправка запроса на изменение поля пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    json_request = {"email": email, "field": field, "value": value}
+    response = post(url_adress() + endpoint, json=json_request)
+
+    logging.info(
+        f'Отправлен запрос на изменение поля пользователя: {json_request}')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе UserOneField')

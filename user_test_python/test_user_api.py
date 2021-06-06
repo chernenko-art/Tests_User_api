@@ -352,3 +352,31 @@ def test_magic_search():
             logging.info(f'Поиск выполнен успешно. Результаты поиска: {response_json}')
             assert True
             break         
+
+
+def test_user_one_field():
+    """Тест метода UserOneField    """
+    logging.info('-'*15 + 'Запуск test_user_one_field')
+
+    # Таймер
+    timing = time.time()
+    while True:
+        # проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Регистрация нового пользователя
+        user = do_register()
+
+        # Запрос на изменение поля 'hobby' пользователя
+        response_json = user_one_field(user['0']["email"])
+
+        # Проверка успешности создания пользователя
+        if response_json['message'] == 'Пользователь с таким email не найден!':
+            logging.error(f'Ошибка изменения параметров пользователя: {response_json}')
+            assert False
+        else:
+            logging.info(f'Параметры пользователя успешно изменены: {response_json}')
+            assert True
+            return
