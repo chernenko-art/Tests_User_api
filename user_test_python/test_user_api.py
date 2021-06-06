@@ -14,7 +14,7 @@ logging.basicConfig(level=level_logging(),
                     )
 
 
-def test_do_register(number=1):
+def test_do_register(number: int = 1):
     """Тест метода doRegister
 
     Args:
@@ -127,7 +127,7 @@ def test_createtask():
             assert False
 
 
-def test_create_company(users_num=1):
+def test_create_company(users_num: int = 1):
     """Тест метода CreateCompany
 
     Args:

@@ -12,8 +12,15 @@ logging.basicConfig(level=level_logging(),
                     )
 
 
-def valid_response(response):
-    """Проверка header ответа сервера"""
+def valid_response(response: dict):
+    """Проверка header ответа сервера
+
+    Args:
+        response (dict): response json
+
+    Returns:
+        bool: Результат проверки (True, False)
+    """
     
     logging.info('Проверка ответа от сервера')
 
@@ -68,7 +75,7 @@ def random_user_generator()->tuple:
         logging.error('Ошибка в получении данных рандомного пользователя')
 
 
-def do_register(number=1)->dict:
+def do_register(number: int  = 1) -> dict:
     """Метод doRegister (запрос на регистрацию пользователя)
 
     Args:
@@ -119,7 +126,7 @@ def do_register(number=1)->dict:
     return user_params_dict
 
 
-def do_login(email, password) -> dict:
+def do_login(email: str, password: str) -> dict:
     """Метод doLogin (запрос на авторизацию пользователя)
 
     Args:
@@ -149,7 +156,8 @@ def do_login(email, password) -> dict:
         logging.error('Ошибка в методе doLogin')
     
 
-def create_task(task_title, task_description, email_owner, email_assign) -> dict:
+def create_task(task_title: str, task_description: str, \
+                email_owner: str, email_assign: str) -> dict:
     """Метод CreateTask (создание задачи пользователю)
 
     Args:
@@ -182,7 +190,8 @@ def create_task(task_title, task_description, email_owner, email_assign) -> dict
         logging.error('Ошибка в методе CreateTask')
 
 
-def create_company(company_name, company_type, company_users, email_owner) -> dict:
+def create_company(company_name: str, company_type: str, \
+                   company_users: str, email_owner: str) -> dict:
     """Метод CreateCompany (создание компании с привязкой пользователей)
 
     Args:
@@ -215,7 +224,8 @@ def create_company(company_name, company_type, company_users, email_owner) -> di
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_user(email, name, tasks, companies, params=None) -> dict:
+def create_user(email: str, name: str, tasks: list, companies: list, \
+                params: dict = None) -> dict:
     """Метод CreateUser (создание пользователей c привязкой к задаче)
 
     Args:
@@ -250,7 +260,8 @@ def create_user(email, name, tasks, companies, params=None) -> dict:
         logging.error('Ошибка в методе CreateCompany')
 
 
-def create_user_with_task(email, name, tasks, companies=None, params=None) -> dict:
+def create_user_with_task(email: str, name: str, tasks: list, companies: list = None,
+                          params: dict = None) -> dict:
     """Метод CreateUser (создание пользователя и создание задачи для него)
 
     Args:
@@ -285,7 +296,7 @@ def create_user_with_task(email, name, tasks, companies=None, params=None) -> di
         logging.error('Ошибка в методе CreateCompany')
 
 
-def add_avatar(email, avatar) -> dict:
+def add_avatar(email: str, avatar: str) -> dict:
     """Метод addAvatar (добавление аватара пользователю)
 
     Args:
@@ -313,7 +324,7 @@ def add_avatar(email, avatar) -> dict:
         logging.error('Ошибка в методе addAvatar')
 
 
-def delele_avatar(email) -> dict:
+def delele_avatar(email: str) -> dict:
     """Метод DeleteAvatar (удаление аватара пользователю)
 
     Args:
@@ -341,8 +352,8 @@ def delele_avatar(email) -> dict:
         logging.error('Ошибка в методе DeleteAvatar')
 
 
-def magic_search(query, company_type=None, fullSimilarity=None,
-                 taskStatus=None, include=None, maxCount=None) -> dict:
+def magic_search(query: str, company_type: str = None, fullSimilarity: bool = None,
+                 taskStatus: str = None, include: list = None, maxCount: int = None) -> dict:
     """Метод MagicSearch (поиск по сотрудникам или компаниям)
 
     Args:
@@ -387,7 +398,7 @@ def magic_search(query, company_type=None, fullSimilarity=None,
         return response.json()
 
 
-def user_one_field(email, field='hobby', value='fitness') -> dict:
+def user_one_field(email: str, field: str = 'hobby', value: str = 'fitness') -> dict:
     """Метод UserOneField (изменение 1 поля пользователя)
 
     Args:
