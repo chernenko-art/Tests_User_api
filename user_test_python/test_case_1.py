@@ -109,18 +109,21 @@ def test_case_1():
                 
                 # Проверка email пользователя
                 for key in search_result['results'][elem]:
-                    if search_result['results'][elem][key] == user_email:
-                        check_email_user = search_result['results'][elem][key]
+                    email = search_result['results'][elem][key]
+                    if email == user_email:
+                        check_email_user = email
                 
                 # Проверка задачи пользователя
-                for task_elem in range(len(search_result['results'][elem]['tasks'])):
-                    if search_result['results'][elem]['tasks'][task_elem]['name'] == task_title:
-                        check_task_title = search_result['results'][elem]['tasks'][task_elem]['name']
+                tasks = search_result['results'][elem]['tasks']
+                for task in range(len(tasks)):
+                    if tasks[task]['name'] == task_title:
+                        check_task_title = tasks[task]['name']
                 
                 # Проверка компании пользователя
-                for c_elem in range(len(search_result['results'][elem]['companies'])):
-                    if search_result['results'][elem]['companies'][c_elem]['name'] == company_name:
-                        check_company_name = search_result['results'][elem]['companies'][c_elem]['name']
+                companies = search_result['results'][elem]['companies']
+                for company in range(len(companies)):
+                    if companies[company]['name'] == company_name:
+                        check_company_name = companies[company]['name']
             
             assert user_email == check_email_user and task_title == check_task_title \
                 and company_name == check_company_name
