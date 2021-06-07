@@ -508,3 +508,30 @@ def get_user(email: str) -> dict:
         return response.json()
     else:
         logging.error('Ошибка в методе getUser')
+
+
+def get_user_full(email: str) -> dict:
+    """Метод getUserfull (поиск полной информации о пользователя по email)
+
+    Args:
+        email (str): email пользователя
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода getUserfull')
+    endpoint = '/tasks/rest/getuserfull'
+
+    # Отправка запроса на изменение поля пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    json_request = {"email": email}
+    response = get(url_adress() + endpoint, json=json_request)
+
+    logging.info(f'Отправлен запрос на поиск пользователя: {json_request}')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе getUserfull')

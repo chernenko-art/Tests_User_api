@@ -436,3 +436,31 @@ def test_get_user():
             logging.info(f'Пользователь найден: {response_json}')
             assert True
             return
+
+
+def test_get_user_full():
+    """Тест метода getUserfull"""
+    logging.info('-'*15 + 'Запуск test_get_user_full')
+
+    # Таймер
+    timing = time.time()
+    while True:
+        # проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Регистрация нового пользователя
+        user = do_register()
+
+        # Запрос на поиск компании
+        response_json = get_user_full(user['0']["email"])
+
+        # Проверка успешности создания пользователя
+        if 'type' in response_json:
+            logging.error(f'Ошибка поиска пользователя: {response_json}')
+            assert False
+        else:
+            logging.info(f'Пользователь найден: {response_json}')
+            assert True
+            return
