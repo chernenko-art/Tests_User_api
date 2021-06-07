@@ -395,7 +395,7 @@ def test_get_company():
             logging.error('Превышено время ожидания')
             assert False
 
-        # Регистрация нового пользователя
+        # Создание компании и получение id
         id_company = test_create_company()
 
         # Запрос на поиск компании
@@ -407,5 +407,32 @@ def test_get_company():
             assert False
         else:
             logging.info(f'Компания найдена: {response_json}')
+            assert True
+            return
+
+def test_get_user():
+    """Тест метода getUser"""
+    logging.info('-'*15 + 'Запуск test_get_user')
+
+    # Таймер
+    timing = time.time()
+    while True:
+        # проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Регистрация нового пользователя
+        user = do_register()
+
+        # Запрос на поиск компании
+        response_json = get_user(user['0']["email"])
+
+        # Проверка успешности создания пользователя
+        if 'type' in response_json:
+            logging.error(f'Ошибка поиска пользователя: {response_json}')
+            assert False
+        else:
+            logging.info(f'Пользователь найден: {response_json}')
             assert True
             return
