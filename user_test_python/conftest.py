@@ -62,7 +62,7 @@ def optional_user_params():
     return json_body['test_params']['user']
 
 
-def avatar_file(num_avatar=1):
+def avatar_file(num_avatar: int = 1):
     """Получение пути к файлу avatar из config.json
 
     Args:

@@ -4,7 +4,8 @@ from conftest import level_logging, url_adress
 
 
 # Конфигурация логов
-FORMAT = '%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d:%(funcName)-20s] %(message)s'
+FORMAT = '%(asctime)s,%(msecs)d %(levelname)-8s \
+    [%(filename)s:%(lineno)d:%(funcName)-20s] %(message)s'
 logging.basicConfig(level=level_logging(),
                     format=FORMAT,
                     datefmt='%m-%d %H:%M',
@@ -426,3 +427,57 @@ def user_one_field(email: str, field: str = 'hobby', value: str = 'fitness') -> 
         return response.json()
     else:
         logging.error('Ошибка в методе UserOneField')
+
+
+def get_company(id_company: int) -> dict:
+    """Метод getCompany (поиск компании по id_company)
+
+    Args:
+        id_company (int): id_company
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода getCompany')
+    endpoint = '/tasks/rest/getcompany'
+
+    # Отправка запроса на изменение поля пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    json_request = {"id_company": id_company}
+    response = get(url_adress() + endpoint, json=json_request)
+
+    logging.info(f'Отправлен запрос на поиск компании: {json_request}')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе getCompany')
+
+
+def get_company(id_company: int) -> dict:
+    """Метод getCompany (поиск компании по id_company)
+
+    Args:
+        id_company (int): id_company
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода getCompany')
+    endpoint = '/tasks/rest/getcompany'
+
+    # Отправка запроса на изменение поля пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    json_request = {"id_company": id_company}
+    response = get(url_adress() + endpoint, json=json_request)
+
+    logging.info(f'Отправлен запрос на поиск компании: {json_request}')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе getCompany')

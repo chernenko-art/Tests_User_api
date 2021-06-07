@@ -6,7 +6,8 @@ from conftest import *
 
 
 # Конфигурация логов
-FORMAT = '%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d:%(funcName)-20s] %(message)s'
+FORMAT = '%(asctime)s,%(msecs)d %(levelname)-8s \
+    [%(filename)s:%(lineno)d:%(funcName)-20s] %(message)s'
 logging.basicConfig(level=level_logging(),
                     format=FORMAT,
                     datefmt='%m-%d %H:%M',
@@ -378,5 +379,33 @@ def test_user_one_field():
             assert False
         else:
             logging.info(f'Параметры пользователя успешно изменены: {response_json}')
+            assert True
+            return
+
+
+def test_get_company():
+    """Тест метода getCompany"""
+    logging.info('-'*15 + 'Запуск test_get_company')
+
+    # Таймер
+    timing = time.time()
+    while True:
+        # проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Регистрация нового пользователя
+        id_company = test_create_company()
+
+        # Запрос на поиск компании
+        response_json = get_company(*id_company)
+
+        # Проверка успешности создания пользователя
+        if response_json['type'] == 'error':
+            logging.error(f'Ошибка поиска компании: {response_json}')
+            assert False
+        else:
+            logging.info(f'Компания найдена: {response_json}')
             assert True
             return
