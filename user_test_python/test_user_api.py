@@ -464,3 +464,29 @@ def test_get_user_full():
             logging.info(f'Пользователь найден: {response_json}')
             assert True
             return
+
+
+def test_metod_api_lis():
+    """Тест метода MetodApiList"""
+    logging.info('-'*15 + 'Запуск test_metod_api_lis')
+
+    # Таймер
+    timing = time.time()
+    while True:
+        # проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Запрос на получение перечня методов api
+        response_json = metod_api_list()
+
+        # Проверка успешности создания пользователя
+        if 'resources' in response_json:
+            logging.info(f'Перечнь методов api получен: {response_json}')
+            assert True
+            return
+            
+        else:
+            logging.error(f'Ошибка получения перечня методов api: {response_json}')
+            assert False

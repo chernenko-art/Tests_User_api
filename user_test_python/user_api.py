@@ -535,3 +535,26 @@ def get_user_full(email: str) -> dict:
         return response.json()
     else:
         logging.error('Ошибка в методе getUserfull')
+
+
+def metod_api_list() -> dict:
+    """Метод MetodApiList (получение перечня методов api)
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода MetodApiList')
+    endpoint = '/tasks/rest/list'
+
+    # Отправка запроса на изменение поля пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    response = get(url_adress() + endpoint)
+
+    logging.info('Отправлен запрос на получение перечня методов api')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе MetodApiList')
