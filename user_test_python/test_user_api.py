@@ -490,3 +490,42 @@ def test_metod_api_lis():
         else:
             logging.error(f'Ошибка получения перечня методов api: {response_json}')
             assert False
+
+
+def test_update_task():
+    """Тест метода UpdateTask"""
+    logging.info('-'*15 + 'Запуск test_update_task')
+    
+    # Заводим таймер для защиты от ошибок на сервере
+    timing = time.time()
+
+    # Цикл с таймером на 10 сек
+    while True:
+
+        # Проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+        
+        # Извлечение параметров task_title, task_description, email_owner
+        params_test = get_params_test()
+       
+        # Регистрация нового пользователя
+        user = do_register()
+
+        # Создание задачи для нового пользователя
+        id_task_data = test_createtask()
+        
+        # Обновление задачи
+        response_json = update_task(params_test['manager_email'], user["0"]['email'],
+                                    *id_task_data, params_test['task_title'], params_test['task_description'])
+
+        # Проверка успешности создания задачи
+        if response_json['type'] == 'error':
+            logging.info(f'Ошибка создания задачи: {response_json}')
+            assert False  
+        else:
+            logging.error(f'Задача успешно изменена: {response_json}')
+            assert True
+            break
+            

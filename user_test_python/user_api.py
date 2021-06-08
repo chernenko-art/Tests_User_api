@@ -558,3 +558,41 @@ def metod_api_list() -> dict:
         return response.json()
     else:
         logging.error('Ошибка в методе MetodApiList')
+
+
+def update_task(email_owner: str, email_assign: str, \
+                id_task: str, task_title: str, task_description: str) -> dict:
+    """Метод UpdateTask (обновление задачи пользователю)
+
+    Args:
+        email_owner (str): email исполнителя 
+        email_assign (str): email автора
+        id_task (str): идентификатор задачи
+        task_title (str): заголовок задачи
+        task_description (str): описание задачи
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода UpdateTask')
+    endpoint = '/tasks/rest/updatetask'
+
+    # Отправка запроса на изменение поля пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    json_request = {
+        "email_owner": email_owner,
+        "email_assign": email_assign,
+        "id_task": id_task,
+        "task_title": task_title,
+        "task_description": task_description
+        }
+    response = get(url_adress() + endpoint, json=json_request)
+
+    logging.info(f'Отправлен запрос на обновление задачи пользователя: {json_request}')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе UpdateTask')
