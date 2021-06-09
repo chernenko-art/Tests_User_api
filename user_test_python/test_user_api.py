@@ -524,10 +524,10 @@ def test_update_task():
 
         # Проверка успешности создания задачи
         if response_json['type'] == 'error':
-            logging.info(f'Ошибка создания задачи: {response_json}')
+            logging.error(f'Ошибка создания задачи: {response_json}')
             assert False  
         else:
-            logging.error(f'Задача успешно изменена: {response_json}')
+            logging.info(f'Задача успешно изменена: {response_json}')
             assert True
             break
 
@@ -547,7 +547,7 @@ def test_add_task_in_cron():
             logging.error('Превышено время ожидания')
             assert False
 
-        # Извлечение параметров email_owner, task_id, hours, minutes, month, days, day_weeks
+        # Извлечение параметров email_owner, hours, minutes, month, days, day_weeks
         params_test = get_params_test()
         
         # Создание задачи для нового пользователя
@@ -567,10 +567,44 @@ def test_add_task_in_cron():
 
         # Проверка успешности создания задачи
         if response_json['type'] == 'error':
-            logging.info(f'Ошибка создания задачи по расписанию: {response_json}')
+            logging.error(f'Ошибка создания задачи по расписанию: {response_json}')
             assert False
         else:
-            logging.error(f'Расписание запуска задачи успешно создано: {response_json}')
+            logging.info(f'Расписание запуска задачи успешно создано: {response_json}')
+            assert True
+            break
+
+
+def test_del_task():
+    """Тест метода delTask"""
+    logging.info('-'*15 + 'Запуск test_del_task')
+
+    # Заводим таймер для защиты от ошибок на сервере
+    timing = time.time()
+
+    # Цикл с таймером на 10 сек
+    while True:
+
+        # Проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Извлечение параметров email_owner
+        params_test = get_params_test()
+        
+        # Создание задачи для нового пользователя
+        id_task_list = test_createtask()
+
+        # Удаление задачи пользователю
+        response_json = del_task(params_test['manager_email'], *id_task_list)
+
+        # Проверка успешности удаления задачи
+        if response_json['type'] == 'error':
+            logging.info(f'Ошибка удаления задачи пользователю: {response_json}')
+            assert False
+        else:
+            logging.error(f'Задача успешно удалена: {response_json}')
             assert True
             break
             

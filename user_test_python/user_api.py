@@ -638,3 +638,32 @@ def add_task_in_cron(email_owner: str, task_id: int, hours: int,
         return response.json()
     else:
         logging.error('Ошибка в методе AddTaskInCron')
+
+
+def del_task(email_owner: str, task_id: int) -> dict:
+    """Метод delTask (удаление задачи пользователю)
+
+    Args:
+        email_owner (str): email исполнителя 
+        task_id (int): идентификатор задачи
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода delTask')
+    endpoint = '/tasks/rest/deletetask'
+
+    # Отправка запроса на изменение поля пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    json_request = {"email_owner": email_owner, "task_id": task_id}
+    response = get(url_adress() + endpoint, params=json_request)
+
+    logging.info(
+        f'Отправлен запрос на удаление задачи пользователю: {json_request}')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе delTask')
