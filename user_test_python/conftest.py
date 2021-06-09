@@ -15,9 +15,9 @@ def url_adress():
     Returns:
         str: url adress
     """
-    schema = json_body['user']['schema']
-    host = json_body['user']['host']
-    port = json_body['user']['port']
+    schema = json_body['url']['schema']
+    host = json_body['url']['host']
+    port = json_body['url']['port']
     return f'{schema}://{host}:{port}'
     
 

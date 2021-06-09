@@ -1,5 +1,7 @@
 from requests import get, put, post, delete
 import logging
+
+from requests.api import request
 from conftest import level_logging, url_adress
 
 
@@ -587,7 +589,7 @@ def update_task(email_owner: str, email_assign: str, \
         "task_title": task_title,
         "task_description": task_description
         }
-    response = get(url_adress() + endpoint, json=json_request)
+    response = post(url_adress() + endpoint, json=json_request)
 
     logging.info(f'Отправлен запрос на обновление задачи пользователя: {json_request}')
 
@@ -629,7 +631,7 @@ def add_task_in_cron(email_owner: str, task_id: int, hours: int,
         "days": days,
         "day_weeks": day_weeks
     }
-    response = get(url_adress() + endpoint, params=json_request)
+    response = post(url_adress() + endpoint, params=json_request)
 
     logging.info(f'Отправлен запрос на запуск задачи по расписанию: {json_request}')
 
@@ -657,7 +659,7 @@ def del_task(email_owner: str, task_id: int) -> dict:
     # Отправка запроса на изменение поля пользователя
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
     json_request = {"email_owner": email_owner, "task_id": task_id}
-    response = get(url_adress() + endpoint, params=json_request)
+    response = delete(url_adress() + endpoint, params=json_request)
 
     logging.info(
         f'Отправлен запрос на удаление задачи пользователю: {json_request}')
@@ -667,3 +669,65 @@ def del_task(email_owner: str, task_id: int) -> dict:
         return response.json()
     else:
         logging.error('Ошибка в методе delTask')
+
+
+def full_update_user(email: str, name: str, tasks: list, companies: list,
+                params: dict) -> dict:
+    """Метод FullUpdateUser (обновление всех данных пользователя)
+
+    Args:
+        email (str): email пользователя
+        name (str): имя пользователя
+        tasks (list): список id уже существующих задач
+        companies (list): перечень id компаний
+        params (dict): остальные параметры пользователя
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода FullUpdateUser')
+    endpoint = '/tasks/rest/fullupdateuser'
+
+    # Формирование входных параметров запроса
+    request_params = {"email": email, "name": name, "tasks": tasks,
+                      "companies": companies}
+    request_params.update(params)
+
+    # Отправка запроса на обновление всех данных пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    response = put(url_adress() + endpoint, json=request_params)
+    logging.info(f'Отправлен запрос на обновление данных пользователя: {request_params}')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе FullUpdateUser')
+
+
+def del_users(email: str) -> dict:
+    """Метод delUsers (удаление пользователя)
+
+    Args:
+        email (str): email пользователя 
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода delUsers')
+    endpoint = '/tasks/rest/deleteuser'
+
+    # Отправка запроса на удаление пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    json_request = {"email": email}
+    response = delete(url_adress() + endpoint, params=json_request)
+
+    logging.info(f'Отправлен запрос на удаление пользователя: {json_request}')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе delUsers')

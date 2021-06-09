@@ -601,10 +601,82 @@ def test_del_task():
 
         # Проверка успешности удаления задачи
         if response_json['type'] == 'error':
-            logging.info(f'Ошибка удаления задачи пользователю: {response_json}')
+            logging.error(f'Ошибка удаления задачи пользователю: {response_json}')
             assert False
         else:
-            logging.error(f'Задача успешно удалена: {response_json}')
+            logging.info(f'Задача успешно удалена: {response_json}')
             assert True
             break
-            
+    
+
+def test_full_update_user():
+    """Тест метода FullUpdateUser"""
+    logging.info('-'*15 + 'Запуск test_full_update_user')
+
+    # Таймер
+    timing = time.time()
+    while True:
+        # проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Регистрация нового пользователя
+        user = do_register()
+
+        # Получение id задания рандомному пользователю в виде массива
+        task = test_createtask()
+
+        # Получение id рандомной компании в виде массива
+        company = test_create_company()
+
+        # Получение параметров пользователя
+        optional_params = optional_user_params()
+
+        # Запрос на обновление данных пользователя
+        request_params = [user['0']['email'], user['0']['name'],
+                          task, company, optional_params]
+        response_json = full_update_user(*request_params)
+
+        # Проверка успешности обновления данных пользователя
+        if 'type' in response_json:
+            logging.error(f'Ошибка обновление данных пользователя: {response_json}')
+            assert False
+        else:
+            logging.info(f'Данные пользователя успешно обновлены: {response_json}')
+            assert True
+            break    
+
+
+def test_del_users():
+    """Тест метода delUsers"""
+    logging.info('-'*15 + 'Запуск test_del_users')
+
+    # Заводим таймер для защиты от ошибок на сервере
+    timing = time.time()
+
+    # Цикл с таймером на 10 сек
+    while True:
+
+        # Проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Регистрация нового пользователя
+        user = do_register()
+        
+        try:
+            # Удаление пользователя
+            response_json = del_users(user['0']['email'])
+            # Проверка успешности удаления пользователя
+            if response_json['message'] == 'Пользователь с таким email не найден!':
+                logging.error(f'Ошибка удаления пользователя: {response_json}')
+                assert False
+            else:
+                logging.info(f'Пользователь успешно удален: {response_json}')
+                assert True
+                break
+        except Exception:
+            logging.error(f'Ошибка на сервере simplejson.errors.JSONDecodeError')
+            assert False
