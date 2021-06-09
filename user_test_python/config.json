@@ -1,5 +1,5 @@
 {
-    "user": {
+    "url": {
         "schema": "http",
         "host": "users.bugred.ru",
         "port": "80"
@@ -14,11 +14,17 @@
         },
         "task": {
             "title": "Спринт 84",
-            "description": "Провести smoke test"
+            "description": "Провести smoke test",
+            "hours": 2,
+            "minutes": 30,
+            "month": 1,
+            "days": 1,
+            "day_weeks": 1
         },
         "company": {
             "name": "Yandex Team",
             "type": "ООО"
+        
         },
         "user": {
             "hobby": "Стрельба из лука, Настолки",

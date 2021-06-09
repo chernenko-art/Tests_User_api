@@ -561,13 +561,13 @@ def metod_api_list() -> dict:
 
 
 def update_task(email_owner: str, email_assign: str, \
-                id_task: str, task_title: str, task_description: str) -> dict:
+                id_task: int, task_title: str, task_description: str) -> dict:
     """Метод UpdateTask (обновление задачи пользователю)
 
     Args:
         email_owner (str): email исполнителя 
         email_assign (str): email автора
-        id_task (str): идентификатор задачи
+        id_task (int): идентификатор задачи
         task_title (str): заголовок задачи
         task_description (str): описание задачи
 
@@ -596,3 +596,45 @@ def update_task(email_owner: str, email_assign: str, \
         return response.json()
     else:
         logging.error('Ошибка в методе UpdateTask')
+
+
+def add_task_in_cron(email_owner: str, task_id: int, hours: int,
+                minutes: int, month: int, days: int, day_weeks: int) -> dict:
+    """Метод AddTaskInCron (создание запуска задачи по расписанию)
+
+    Args:
+        email_owner (str): email исполнителя 
+        task_id (int): идентификатор задачи
+        hours (int): часов на выполнение
+        minutes (int): минут на выполнение
+        month (int): месяцев на выполнение
+        days (int): дней на выполнение
+        day_weeks (int): дней недели на выполнение
+
+    Returns:
+        dict: response json
+    """
+
+    logging.info('Вызов метода AddTaskInCron')
+    endpoint = '/tasks/rest/addtaskincron'
+
+    # Отправка запроса на изменение поля пользователя
+    logging.info(f'Установка соединения с {url_adress() + endpoint}')
+    json_request = {
+        "email_owner": email_owner,
+        "task_id": task_id,
+        "hours": hours,
+        "minutes": minutes,
+        "month": month,
+        "days": days,
+        "day_weeks": day_weeks
+    }
+    response = get(url_adress() + endpoint, params=json_request)
+
+    logging.info(f'Отправлен запрос на запуск задачи по расписанию: {json_request}')
+
+    # Проверка валидности ответа на запрос
+    if valid_response(response):
+        return response.json()
+    else:
+        logging.error('Ошибка в методе AddTaskInCron')

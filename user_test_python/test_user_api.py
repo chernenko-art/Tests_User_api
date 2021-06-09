@@ -1,6 +1,8 @@
 import pytest
 import logging
 import time
+
+from requests.api import request
 from user_api import *
 from conftest import *
 
@@ -514,11 +516,11 @@ def test_update_task():
         user = do_register()
 
         # Создание задачи для нового пользователя
-        id_task_data = test_createtask()
+        id_task_list = test_createtask()
         
         # Обновление задачи
         response_json = update_task(params_test['manager_email'], user["0"]['email'],
-                                    *id_task_data, params_test['task_title'], params_test['task_description'])
+                                    *id_task_list, params_test['task_title'], params_test['task_description'])
 
         # Проверка успешности создания задачи
         if response_json['type'] == 'error':
@@ -526,6 +528,49 @@ def test_update_task():
             assert False  
         else:
             logging.error(f'Задача успешно изменена: {response_json}')
+            assert True
+            break
+
+
+def test_add_task_in_cron():
+    """Тест метода AddTaskInCron"""
+    logging.info('-'*15 + 'Запуск test_add_task_in_cron')
+
+    # Заводим таймер для защиты от ошибок на сервере
+    timing = time.time()
+
+    # Цикл с таймером на 10 сек
+    while True:
+
+        # Проверка времени выполнения цикла
+        if time.time() - timing > 10.0:
+            logging.error('Превышено время ожидания')
+            assert False
+
+        # Извлечение параметров email_owner, task_id, hours, minutes, month, days, day_weeks
+        params_test = get_params_test()
+        
+        # Создание задачи для нового пользователя
+        id_task_list = test_createtask()
+
+        # Создание запуска задачи по расписанию
+        request_params = [
+            params_test['manager_email'],
+            *id_task_list,
+            params_test['task_json']['hours'],
+            params_test['task_json']['minutes'],
+            params_test['task_json']['month'],
+            params_test['task_json']['days'],
+            params_test['task_json']['day_weeks']
+        ]
+        response_json = add_task_in_cron(*request_params)
+
+        # Проверка успешности создания задачи
+        if response_json['type'] == 'error':
+            logging.info(f'Ошибка создания задачи по расписанию: {response_json}')
+            assert False
+        else:
+            logging.error(f'Расписание запуска задачи успешно создано: {response_json}')
             assert True
             break
             
