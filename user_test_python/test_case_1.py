@@ -6,7 +6,8 @@ from conftest import *
 
 
 # Конфигурация логов
-FORMAT = '%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d:%(funcName)-20s] %(message)s'
+FORMAT = '%(asctime)s,%(msecs)d %(levelname)-8s \
+    [%(filename)s:%(lineno)d:%(funcName)-20s] %(message)s'
 logging.basicConfig(level=level_logging(),
                     format=FORMAT,
                     datefmt='%m-%d %H:%M',
@@ -44,19 +45,37 @@ def test_case_1():
 
         # Регистрация пользователя
         logging.info('1. Регистрация пользователя')
-        user = do_register()
-        user_email = user['0']['email']
-        user_password = user['0']['password']
+        try:
+            user = do_register()
+            if 'type' in user["0"]["json"]:
+                raise Exception('Error key "type" in response json do_register()')
+            user_email = user['0']['email']
+            user_password = user['0']['password']
+        except Exception:
+            logging.error(f'Ошибка создания пользователя: {user["0"]["json"]}')
+            assert False
 
         # Вход в систему под пользователем
         logging.info('2. Вход в систему под пользователем')
-        do_login(user_email, user_password)
+        try:
+            login_json = do_login(user_email, user_password)
+            if login_json["result"] == False:
+                raise Exception('Error key "result" in response json do_login()')
+        except Exception:
+            logging.error(f'Ошибка авторизации пользователя: {login_json}')
+            assert False
 
         # Создание аватара пользователя
         logging.info('3. Создание аватара пользователя')
         # Получение файла изображения
         avatar = avatar_file()
-        add_avatar(user_email, avatar)
+        try:
+            add_avatar_json = add_avatar(user_email, avatar)
+            if add_avatar_json['status'] != 'ok':
+                raise Exception('Error key "status" in response json add_avatar()')
+        except Exception:
+            logging.error(f'Ошибка добавления аватара пользователя: {add_avatar_json}')
+            assert False
 
         # Вход в систему под менеджером
         logging.info('4. Вход в систему под менеджером')
@@ -64,72 +83,117 @@ def test_case_1():
         params_test = get_params_test()  
         manager_email = params_test['manager_email']
         manager_password = params_test['manager_password']
-        do_login(manager_email, manager_password)
+        try:
+            login_json = do_login(manager_email, manager_password)
+            if login_json["result"] == False:
+                raise Exception('Error key "result" in response json do_login()')
+        except Exception:
+            logging.error(f'Ошибка авторизации менеджера: {login_json}')
        
         # Создание компании с привязкой пользователя
         logging.info('5. Создание компании с привязкой пользователя')
         company_name = params_test['company_name']
         company_type = params_test['company_type']
         company_users = [user_email]
-        company_params = create_company(company_name, company_type, company_users, manager_email)
-        id_company = company_params['id_company']
+        try:
+            company_json = create_company(company_name, company_type, company_users, manager_email)
+            if company_json['type'] != 'success':
+                raise Exception('Error key "type" in response json create_company()')
+        except Exception:
+            logging.error(f'Ошибка создания компании: {company_json}')
+            assert False
 
-        # Создание задачи пользователю
+        # Создание задачи пользователя
         logging.info('6. Создание задачи пользователю')
         task_title = params_test['task_title']
         task_description = params_test['task_description']
-        task_params = create_task(task_title, task_description, manager_email, user_email)
-        id_task = task_params['id_task']
+        try:
+            task_json = create_task(task_title, task_description, manager_email, user_email)
+            if task_json['message'] != 'Задача успешно создана!':
+                raise Exception('Error key "message" in response json create_task()')
+        except Exception:
+            logging.error(f'Ошибка создания задачи пользователя: {task_json}')
+            assert False
 
         # Вход в систему под пользователем
         logging.info('7. Вход в систему под пользователем')
-        do_login(user_email, user_password)
+        try:
+            login_json = do_login(user_email, user_password)
+            if login_json["result"] == False:
+                raise Exception('Error key "result" in response json do_login()')
+        except Exception:
+            logging.error(f'Ошибка авторизации пользователя: {login_json}')
+            assert False
 
         # Удаление аватара пользователя
         logging.info('8. Удаление аватара пользователя')
-        delele_avatar(user_email)
+        try:
+            del_avatar_json = delele_avatar(user_email)
+            if del_avatar_json['status'] != 'ok':
+                raise Exception('Error key "status" in response delele_avatar()')
+        except Exception:
+            logging.error(f'Ошибка удаления аватара пользователя: {del_avatar_json}')
+            assert False
 
         # Создание нового аватара пользователя
         logging.info('9. Создание нового аватара пользователя')
         # Получение файла изображения
         avatar = avatar_file(2)
-        add_avatar(user_email, avatar)
+        try:
+            add_avatar_json = add_avatar(user_email, avatar)
+            if add_avatar_json['status'] != 'ok':
+                raise Exception('Error key "status" in response json add_avatar()')
+        except Exception:
+            logging.error(f'Ошибка добавления аватара пользователя: {add_avatar_json}')
+            assert False
 
         # Просмотр задач, и привязанных компаний
         logging.info('10. Просмотр задач, и привязанных компаний')
-        search_result = magic_search(user_email)
+        try:
+            search_json = magic_search(user_email)
+            if 'code_error' in search_json:
+                raise Exception('Key "code_error" in response magic_search()')
+        except Exception:
+            logging.error(f'Ошибка поиска пользователя: {search_json}')
+            assert False
         
         # Сравнение результатов поиска с фактическими
         check_email_user = None
         check_task_title = None
         check_company_name = None
         
-        if search_result['foundCount'] >= 1:
-            for elem in range(len(search_result['results'])):
+        if search_json['foundCount'] >= 1:
+            for elem in range(len(search_json['results'])):
                 
                 # Проверка email пользователя
-                for key in search_result['results'][elem]:
-                    email = search_result['results'][elem][key]
+                for key in search_json['results'][elem]:
+                    email = search_json['results'][elem][key]
                     if email == user_email:
                         check_email_user = email
                 
                 # Проверка задачи пользователя
-                tasks = search_result['results'][elem]['tasks']
+                tasks = search_json['results'][elem]['tasks']
                 for task in range(len(tasks)):
                     if tasks[task]['name'] == task_title:
                         check_task_title = tasks[task]['name']
                 
                 # Проверка компании пользователя
-                companies = search_result['results'][elem]['companies']
+                companies = search_json['results'][elem]['companies']
                 for company in range(len(companies)):
                     if companies[company]['name'] == company_name:
                         check_company_name = companies[company]['name']
             
             assert user_email == check_email_user and task_title == check_task_title \
                 and company_name == check_company_name
-            logging.info('test_case_1 успешно пройден')
+            logging.info(f'test_case_1 успешно пройден: \
+                         {user_email} = {check_email_user}, \
+                         {task_title} = {check_task_title}, \
+                         {company_name} = {check_company_name}')
             break
         
         else:
-            logging.error('Совпадений не найдено, test_case_1 провален')
+            logging.error(f'test_case_1 провален \
+                         {user_email} = {check_email_user}, \
+                         {task_title} = {check_task_title}, \
+                         {company_name} = {check_company_name}')
             assert False

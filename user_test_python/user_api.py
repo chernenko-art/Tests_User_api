@@ -129,12 +129,12 @@ def do_register(number: int  = 1) -> dict:
     return user_params_dict
 
 
-def do_login(email: str, password: str) -> dict:
+def do_login(email: str, password) -> dict:
     """Метод doLogin (запрос на авторизацию пользователя)
 
     Args:
         email (str): email пользователя
-        password (str): password пользователя
+        password: password пользователя
 
     Returns:
         dict: response json
@@ -150,7 +150,7 @@ def do_login(email: str, password: str) -> dict:
         "password": password
     })
     logging.info(f'Отправлен запрос на авторизацию пользователя:\
-         "email" : "{email}", "password" : "{password}"')
+         "email" : "{email}", "password" : {password}')
     
     # Проверка валидности ответа на запрос
     if valid_response(response):
