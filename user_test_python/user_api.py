@@ -145,7 +145,7 @@ def do_login(email: str, password) -> dict:
     
     # Отправка запроса на авторизацию пользователя
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
-    response = post(url_adress() + endpoint, json={
+    response = post(url_adress() + endpoint, params={
         "email": email,
         "password": password
     })
