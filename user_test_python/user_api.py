@@ -375,16 +375,22 @@ def magic_search(query: str, company_type: str = None, fullSimilarity: bool = No
     logging.info('Вызов метода MagicSearch')
     endpoint = '/tasks/rest/magicsearch'
 
+    # Определение параметров запроса
+    request_params = {"query": query}
+    # Проверка передачи опциональных параметров
+    if company_type != None:
+        request_params.update({"company_type": company_type})
+    if fullSimilarity != None:
+        request_params.update({"fullSimilarity": fullSimilarity})
+    if taskStatus != None:
+        request_params.update({"taskStatus": taskStatus})
+    if include != None:
+        request_params.update({"include": include})
+    if maxCount != None:
+        request_params.update({"maxCount": maxCount})
+    
     # Отправка запроса на выполнение поиска
     logging.info(f'Установка соединения с {url_adress() + endpoint}')
-    request_params = {
-        "query": query,
-        "company_type": company_type,
-        "fullSimilarity": fullSimilarity,
-        "taskStatus": taskStatus,
-        "include": include,
-        "maxCount": maxCount
-    }
     response = post(url_adress() + endpoint, json=request_params)
 
     logging.info(f'Отправлен запрос на выполение поиска: {request_params}')
