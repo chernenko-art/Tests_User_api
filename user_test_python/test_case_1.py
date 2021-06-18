@@ -47,8 +47,7 @@ def test_case_1():
             logging.info('1. Регистрация пользователя')
             user = do_register()
             if 'type' in user["0"]["json"]:
-                logging.error(f'Ошибка создания пользователя: {user["0"]["json"]}')
-                raise Exception('Error key "type" in response json do_register()')
+                raise Exception(f'Error key "type" in response json do_register(): {user["0"]["json"]}')
             user_email = user['0']['email']
             user_password = user['0']['password']
                 
@@ -57,8 +56,7 @@ def test_case_1():
             logging.info('2. Вход в систему под пользователем')
             login_json = do_login(user_email, user_password)
             if login_json["result"] == False:
-                logging.error(f'Ошибка авторизации пользователя: {login_json}')
-                raise Exception('Error key "result" in response json do_login()')
+                raise Exception(f'Error key "result" in response json do_login(): {login_json}')
 
             # Создание аватара пользователя
             logging.info('3. Создание аватара пользователя')
@@ -66,8 +64,7 @@ def test_case_1():
             avatar = avatar_file()
             add_avatar_json = add_avatar(user_email, avatar)
             if add_avatar_json['status'] != 'ok':
-                logging.error(f'Ошибка добавления аватара пользователя: {add_avatar_json}')
-                raise Exception('Error key "status" in response json add_avatar()')
+                raise Exception(f'Error key "status" in response json add_avatar(): {add_avatar_json}')
                     
             # Вход в систему под менеджером
             logging.info('4. Вход в систему под менеджером')
@@ -77,8 +74,7 @@ def test_case_1():
             manager_password = params_test['manager_password']
             login_json = do_login(manager_email, manager_password)
             if login_json["result"] == False:
-                logging.error(f'Ошибка авторизации менеджера: {login_json}')
-                raise Exception('Error key "result" in response json do_login()')
+                raise Exception(f'Error key "result" in response json do_login(): {login_json}')
                 
             # Создание компании с привязкой пользователя
             logging.info('5. Создание компании с привязкой пользователя')
@@ -87,8 +83,7 @@ def test_case_1():
             company_users = [user_email]
             company_json = create_company(company_name, company_type, company_users, manager_email)
             if company_json['type'] != 'success':
-                logging.error(f'Ошибка создания компании: {company_json}')
-                raise Exception('Error key "type" in response json create_company()')
+                raise Exception(f'Error key "type" in response json create_company(): {company_json}')
                 
             # Создание задачи пользователя
             logging.info('6. Создание задачи пользователю')
@@ -96,22 +91,19 @@ def test_case_1():
             task_description = params_test['task_description']
             task_json = create_task(task_title, task_description, manager_email, user_email)
             if task_json['message'] != 'Задача успешно создана!':
-                logging.error(f'Ошибка создания задачи пользователя: {task_json}')
-                raise Exception('Error key "message" in response json create_task()')
+                raise Exception(f'Error key "message" in response json create_task(): {task_json}')
                 
             # Вход в систему под пользователем
             logging.info('7. Вход в систему под пользователем')
             login_json = do_login(user_email, user_password)
             if login_json["result"] == False:
-                logging.error(f'Ошибка авторизации пользователя: {login_json}')
-                raise Exception('Error key "result" in response json do_login()')
+                raise Exception(f'Error key "result" in response json do_login(): {login_json}')
 
             # Удаление аватара пользователя
             logging.info('8. Удаление аватара пользователя')
             del_avatar_json = delele_avatar(user_email)
             if del_avatar_json['status'] != 'ok':
-                logging.error(f'Ошибка удаления аватара пользователя: {del_avatar_json}')
-                raise Exception('Error key "status" in response delele_avatar()')
+                raise Exception(f'Error key "status" in response delele_avatar(): {del_avatar_json}')
                 
             # Создание нового аватара пользователя
             logging.info('9. Создание нового аватара пользователя')
@@ -119,15 +111,13 @@ def test_case_1():
             avatar = avatar_file(2)
             add_avatar_json = add_avatar(user_email, avatar)
             if add_avatar_json['status'] != 'ok':
-                logging.error(f'Ошибка добавления аватара пользователя: {add_avatar_json}')
-                raise Exception('Error key "status" in response json add_avatar()')
+                raise Exception(f'Error key "status" in response json add_avatar(): {add_avatar_json}')
                 
             # Просмотр задач, и привязанных компаний
             logging.info('10. Просмотр задач, и привязанных компаний')
             search_json = magic_search(user_email)
             if 'code_error' in search_json:
-                logging.error(f'Ошибка поиска пользователя: {search_json}')
-                raise Exception('Key "code_error" in response magic_search()')
+                raise Exception(f'Key "code_error" in response magic_search(): {search_json}')
                 
             # Сравнение результатов поиска с фактическими
             check_email_user = None
@@ -170,6 +160,7 @@ def test_case_1():
                             {company_name} = {check_company_name}')
                 assert False
         
-        except Exception:
+        except Exception as err:
+            logging.error(err)
             assert False
 

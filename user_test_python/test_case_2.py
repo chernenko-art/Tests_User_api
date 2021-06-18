@@ -51,8 +51,7 @@ def test_case_2():
                 user_email, user_name, password = random_user_generator()       
                 c_u_w_t_json = create_user_with_task(user_email, user_name, [task_1])
                 if 'type' in c_u_w_t_json:
-                    logging.error(f'Ошибка создания задачи пользователя: {c_u_w_t_json}')
-                    raise Exception('Error key "type" in response create_user_with_task()')
+                    raise Exception(f'Error key "type" in response create_user_with_task(): {c_u_w_t_json}')
                 # Добавление email пользователя в массив
                 user_list.append(user_email)
 
@@ -61,8 +60,7 @@ def test_case_2():
             for email in user_list:
                 u_o_f_json = user_one_field(email)
                 if u_o_f_json['message'] == 'Пользователь с таким email не найден!':
-                    logging.error(f'Ошибка изменения поля пользователя: {u_o_f_json}')
-                    raise Exception('Error key "message" in response user_one_field()')
+                    raise Exception(f'Error key "message" in response user_one_field(): {u_o_f_json}')
                
             # Вход в систему под менеджером
             logging.info('3. Вход в систему под менеджером')
@@ -71,16 +69,14 @@ def test_case_2():
             manager_password = params_test['manager_password']
             login_json = do_login(manager_email, manager_password)
             if login_json["result"] == False:
-                logging.error(f'Ошибка авторизации менеджера: {login_json}')
-                raise Exception('Error key "result" in response json do_login()')
+                raise Exception(f'Error key "result" in response json do_login(): {login_json}')
  
             # Поиск пользователей по созданной задаче
             logging.info('4. Поиск пользователей по созданной задаче')
             search_params = ' '.join(user_list)
             search_json = magic_search(search_params)
             if 'code_error' in search_json:
-                logging.error(f'Ошибка поиска пользователя: {search_json}')
-                raise Exception('Key "code_error" in response magic_search()')
+                raise Exception(f'Key "code_error" in response magic_search(): {search_json}')
 
             # Проверка выполнения задач пользователями
             logging.info('5. Проверка выполнения задач пользователями')
@@ -93,8 +89,7 @@ def test_case_2():
                                 задача - '{task['name']}' \
                                 статус - {task['status']}")
                 else:
-                    logging.error(f"Отсутствует поле 'status' в задаче пользователя {user}")
-                    assert False
+                    raise Exception(f'Key "status" not in response magic_search(): {user}')
 
             # Добавление новой задачи пользователям
             logging.info('6. Добавление новой задачи пользователям')
@@ -102,15 +97,13 @@ def test_case_2():
             for email in user_list:
                 task_json = create_task(task_2['title'], task_2['description'], manager_email, email)
                 if task_json['message'] != 'Задача успешно создана!':
-                    logging.error(f'Ошибка создания задачи пользователя: {task_json}')
-                    raise Exception('Error key "message" in response json create_task()')
+                    raise Exception(f'Error key "message" in response json create_task(): {task_json}')
 
             # Проверка успешности выполения test_case_2
             # Обновление поиска пользователей по созданым задачам
             search_json = magic_search(search_params)
             if 'code_error' in search_json:
-                logging.error(f'Ошибка поиска пользователя: {search_json}')
-                raise Exception('Key "code_error" in response magic_search()')
+                raise Exception(f'Key "code_error" in response magic_search(): {search_json}')
 
             # Определение заданного массива задач и пользователей
             spec_list = {}
@@ -141,5 +134,6 @@ def test_case_2():
                             spec_list = {spec_list}, result_list = {result_list}')
                 assert False
         
-        except Exception:
+        except Exception as err:
+            logging.error(err)
             assert False
