@@ -46,10 +46,10 @@ def test_case_1():
             # Регистрация пользователя
             logging.info('1. Регистрация пользователя')
             user = do_register()
-            if 'type' in user["0"]["json"]:
-                raise Exception(f'Error key "type" in response json do_register(): {user["0"]["json"]}')
-            user_email = user['0']['email']
-            user_password = user['0']['password']
+            if 'type' in user["json"]:
+                raise Exception(f'Error key "type" in response json do_register(): {user["json"]}')
+            user_email = user['email']
+            user_password = user['password']
                 
 
             # Вход в систему под пользователем

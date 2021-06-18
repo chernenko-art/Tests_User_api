@@ -40,15 +40,15 @@ def test_do_register(number: int = 1):
         for _ in range(number):
             # Регистрация пользователя
             user = do_register()
-            if 'type' in user["0"]['json']:
-                logging.error(user["0"]['json']['type'])
+            if 'type' in user['json']:
+                logging.error(user['json']['type'])
                 assert False
             else:
                 logging.info(
                     f'Пользователь успешно зарегестрирован:\
-                    "email" : {user["0"]["email"]},\
-                        "name": {user["0"]["name"]},\
-                            "password" : {user["0"]["password"]}'
+                    "email" : {user["email"]},\
+                        "name": {user["name"]},\
+                            "password" : {user["password"]}'
                             )
                 assert True
         break
@@ -73,12 +73,12 @@ def test_do_login():
         user = do_register()
 
         # Авторизация зарегестрированного пользователя
-        response_json = do_login(user["0"]["email"], user["0"]["password"])
+        response_json = do_login(user["email"], user["password"])
         
         # Проверка успешности авторизации
         if response_json['result']:
             logging.info(f'Авторизация пользователя выполнена успешно\
-                "email" : {user["0"]["email"]}, "password" : {user["0"]["password"]}')
+                "email" : {user["email"]}, "password" : {user["password"]}')
             assert True
             break
         else:
@@ -116,7 +116,7 @@ def test_createtask():
             params_test['task_title'],
             params_test['task_description'],
             params_test['manager_email'],
-            user["0"]['email']
+            user['email']
             )
 
         # Проверка успешности создания задачи
@@ -156,7 +156,10 @@ def test_create_company(users_num: int = 1):
         user = do_register(users_num)
        
         # Создание списка email пользователей
-        email_user_list = [user[str(num)]['email'] for num in range(users_num)]
+        if users_num == 1:
+            email_user_list = [user['email']]
+        else:
+            email_user_list = [user[num]['email'] for num in range(users_num)]
         
         # Запрос на создание компании
         response_json = create_company(
@@ -282,13 +285,13 @@ def test_add_avatar():
         avatar = avatar_file()
         
         # Запрос на добавление аватара пользователю
-        response_json = add_avatar(user["0"]["email"], avatar)
+        response_json = add_avatar(user["email"], avatar)
 
         # Проверка успешности добавления аватара пользователю
         if response_json['status'] == 'ok':
-            logging.info(f'Аватар добавлен пользователю: {user["0"]["email"]}')
+            logging.info(f'Аватар добавлен пользователю: {user["email"]}')
             assert True
-            return user["0"]["email"]
+            return user["email"]
         else:
             logging.error(f'Ошибка test_add_avatar : {response_json}')
             assert False
@@ -373,7 +376,7 @@ def test_user_one_field():
         user = do_register()
 
         # Запрос на изменение поля 'hobby' пользователя
-        response_json = user_one_field(user['0']["email"])
+        response_json = user_one_field(user["email"])
 
         # Проверка успешности создания пользователя
         if response_json['message'] == 'Пользователь с таким email не найден!':
@@ -428,7 +431,7 @@ def test_get_user():
         user = do_register()
 
         # Запрос на поиск компании
-        response_json = get_user(user['0']["email"])
+        response_json = get_user(user["email"])
 
         # Проверка успешности создания пользователя
         if 'type' in response_json:
@@ -456,7 +459,7 @@ def test_get_user_full():
         user = do_register()
 
         # Запрос на поиск компании
-        response_json = get_user_full(user['0']["email"])
+        response_json = get_user_full(user["email"])
 
         # Проверка успешности создания пользователя
         if 'type' in response_json:
@@ -519,7 +522,7 @@ def test_update_task():
         id_task_list = test_createtask()
         
         # Обновление задачи
-        response_json = update_task(params_test['manager_email'], user["0"]['email'],
+        response_json = update_task(params_test['manager_email'], user['email'],
                                     *id_task_list, params_test['task_title'], params_test['task_description'])
 
         # Проверка успешности создания задачи
@@ -634,7 +637,7 @@ def test_full_update_user():
         optional_params = optional_user_params()
 
         # Запрос на обновление данных пользователя
-        request_params = [user['0']['email'], user['0']['name'],
+        request_params = [user['email'], user['name'],
                           task, company, optional_params]
         response_json = full_update_user(*request_params)
 
@@ -668,7 +671,7 @@ def test_del_users():
         
         try:
             # Удаление пользователя
-            response_json = del_users(user['0']['email'])
+            response_json = del_users(user['email'])
             # Проверка успешности удаления пользователя
             if response_json['message'] == 'Пользователь с таким email не найден!':
                 logging.error(f'Ошибка удаления пользователя: {response_json}')

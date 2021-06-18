@@ -90,10 +90,8 @@ def do_register(number: int  = 1) -> dict:
  
     endpoint = '/tasks/rest/doregister'
 
-    # Словарь для хранения данных, зарегестрированных пользователей
-    user_params_dict = {}
-    # Переменная для генерации ключей user_params_dict
-    key_user = 0
+    # Список для хранения данных, зарегестрированных пользователей
+    user_params_list = []
 
     # Цикл регистрации пользователей
     for _ in range(number):
@@ -114,19 +112,23 @@ def do_register(number: int  = 1) -> dict:
         
         # Проверка валидности ответа на запрос
         if valid_response(response):
-            user_params_dict[str(key_user)] = {
+            user_params_list.append(
+                {
                 "json" : response.json(),
                 "email": email,
                 "name": name,
                 "password": password
                 }
-            # Генерация ключа следующего пользователя
-            key_user += 1
+            )
         else:
             logging.error('Ошибка в методе doregister')
     
-    # Возврат словаря с данными зарегестрированных пользователей
-    return user_params_dict
+    # Возврат данных зарегестрированного пользователя
+    if number == 1:
+        return user_params_list[0]
+    # Возврат списка с данными зарегестрированных пользователей если number > 1
+    else:
+        return user_params_list
 
 
 def do_login(email: str, password) -> dict:
